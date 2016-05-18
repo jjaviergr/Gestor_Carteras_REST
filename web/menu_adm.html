@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Comerciales - Iniciar Sesion.</title>
+        <link rel="shortcut icon" href="./favicon.ico" />
+        
+        <link rel="stylesheet" type="text/css" media="screen" href="css/estilos.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/iconos.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/posicionamiento.css" />
+    </head>
+    <body>
+        
+          
+        <div id="pagina"> 
+            <div id="header"></div>
+            
+                    <script>
+                         function Escribe_Nombre() {
+                                var xhttp;                       
+                                var id;
+                                xhttp = new XMLHttpRequest();
+                                xhttp.onreadystatechange = function () 
+                                {
+                                    if (xhttp.readyState === 4 && xhttp.status === 200) 
+                                    {
+                                        var respuesta=xhttp.responseText;
+                                        var element=document.createTextNode("Bienvenido "+respuesta+", has conseguido entrar"); 
+
+                                        var div=document.getElementById("nombre_user");                             
+                                        div.appendChild(element);
+                                        
+                                    }
+                                };
+
+                                var URLactual = window.location.href;
+                                id=URLactual.split("=")[1];
+
+                                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/nombre/"+id, true);
+                                //alert("http://localhost:8080/GestorCarteras_REST/rest/App_Service/nombre/"+id);
+                                xhttp.send();
+                            }
+                            Escribe_Nombre();
+                    </script>
+               
+       
+        
+            <div id="toolbar">      
+                <div class="m_tootlbar">                    
+                    <div id="toolbar_botones">
+                        <ul>
+                            <li>
+                                <a href="usuarios.html">
+                                    <span class="icono-32-volver"></span>
+                                    Adm.Usuarios
+                                </a>
+                            </li>
+                            <li>
+                                <a href="empresas.html">
+                                    <span class="icono-32-empresas"></span>
+                                    Empresas
+                                </a>
+                            </li>
+                            <li>
+                                <a href="acciones/visitas.action.jsp">
+                                    <span class="icono-32-visitas"></span>
+                                    Visitas
+                                </a>                                
+                            </li>
+                            <li>                               
+                                <a href="acciones/perfil.action.jsp">
+                                    <span class="icono-32-perfil"></span>
+                                    Perfil
+                                </a>                                
+                            </li>
+                            <li>
+                                <a href="acciones/logout.action.jsp">
+                                    <span class="icono-32-salir"></span>
+                                    Salir
+                                </a>                                
+                            </li>                            
+                        </ul>
+                        <div class="limpiar"></div>
+                    </div>
+                    <div class="toolbar_titulo icono-48-menu">
+                        <h2>Menu Principal</h2>
+                    </div>                    
+                </div>
+            </div>
+            <div id="content">
+                 <div id="nombre_user" ></div> 
+            </div>
+        </div>
+
+        <div id="pie"></div>
+        <script>
+            var div_pie = document.getElementById("pie");
+            var div_pie_izq = document.createElement("DIV");
+            var div_pie_dch = document.createElement("DIV");
+
+
+            div_pie_izq.id = "pie_izq";
+            div_pie_dch.id = "pie_dch";
+
+            var h6i = document.createElement("H6");
+            var text=document.createTextNode("2016");            
+            h6i.appendChild(text);
+            
+            div_pie_izq.appendChild(h6i);
+
+            div_pie.appendChild(div_pie_izq);
+
+
+
+            var h6d = document.createElement("H6");
+            var text2=document.createTextNode("José Javier García Romero");
+            h6d.appendChild(text2);
+            div_pie_dch.appendChild(h6d);
+            
+            div_pie.appendChild(div_pie_dch);
+            
+        </script>
+    </body>
+</html>

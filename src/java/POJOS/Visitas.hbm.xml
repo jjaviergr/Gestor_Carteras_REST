@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02-may-2016 18:45:52 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="POJOS.Visitas" table="visitas" catalog="comerciales" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="empresas" class="POJOS.Empresas" fetch="select">
+            <column name="empresas_id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="usuarios" class="POJOS.Usuarios" fetch="select">
+            <column name="usuarios_id" not-null="true" />
+        </many-to-one>
+        <property name="fecha" type="timestamp">
+            <column name="fecha" length="19" not-null="true" />
+        </property>
+        <property name="resultado" type="string">
+            <column name="resultado" length="16777215" />
+        </property>
+        <property name="motivo" type="string">
+            <column name="motivo" length="150" />
+        </property>
+    </class>
+</hibernate-mapping>

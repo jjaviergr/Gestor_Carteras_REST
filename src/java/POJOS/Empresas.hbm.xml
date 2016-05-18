@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02-may-2016 18:45:52 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="POJOS.Empresas" table="empresas" catalog="comerciales" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="cif" type="string">
+            <column name="cif" length="20" unique="true" />
+        </property>
+        <property name="nombre" type="string">
+            <column name="nombre" length="80" not-null="true" />
+        </property>
+        <property name="direccion" type="string">
+            <column name="direccion" length="80" not-null="true" />
+        </property>
+        <property name="provincia" type="string">
+            <column name="provincia" length="30" not-null="true" />
+        </property>
+        <property name="poblacion" type="string">
+            <column name="poblacion" length="30" not-null="true" />
+        </property>
+        <property name="cp" type="string">
+            <column name="cp" length="5" not-null="true" />
+        </property>
+        <property name="tlf" type="int">
+            <column name="tlf" not-null="true" />
+        </property>
+        <property name="comercial" type="int">
+            <column name="comercial" not-null="true" />
+        </property>
+        <property name="fechaAlta" type="timestamp">
+            <column name="fecha_alta" length="19" not-null="true" />
+        </property>
+        <property name="contacto" type="string">
+            <column name="contacto" length="50" />
+        </property>
+        <set name="visitases" table="visitas" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="empresas_id" not-null="true" />
+            </key>
+            <one-to-many class="POJOS.Visitas" />
+        </set>
+    </class>
+</hibernate-mapping>

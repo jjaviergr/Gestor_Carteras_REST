@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Comerciales - Alta Nueva usuario.</title>
+        <link rel="shortcut icon" href="./favicon.ico" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/estilos.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/iconos.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/posicionamiento.css" />
+        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.validate.min.js"></script>
+        <script type="text/javascript" src="js/additional-methods.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#altausuario').submit(function () {
+                    if (confirm("¿Estas Seguro?"))
+                        return true;
+                    else
+                        return false;
+                });
+                $('#altausuario').validate({
+                    rules: {
+                        "nombre": {
+                            "required": true,
+                            "maxlength": 80
+                        },
+                        "direccion": {
+                            "required": true,
+                            "maxlength": 80
+                        },
+                        "provincia": {
+                            "required": true,
+                            "maxlength": 30
+                        },
+                        "poblacion": {
+                            "required": true,
+                            "maxlength": 30
+                        },
+                        "cp": {
+                            "required": true,
+                            "digits": true,
+                            "minlength": 5,
+                            "maxlength": 5
+                        },
+                        "tlf": {
+                            "required": true,
+                            "digits": true,
+                            "minlength": 9,
+                            "maxlength": 9
+                        },
+                        "contacto": {maxlength: 50}
+                    },
+                    messages: {
+                        "nombre": {
+                            "required": "Debe de escribir el nombre de la usuario",
+                            "maxlength": "El numero maximo de caracteres es 80"
+                        },
+                        "direccion": {
+                            "required": "Debe escribir una direccion",
+                            "maxlength": "Tamaño maximo de caracteres es 80."
+                        },
+                        "provincia": {
+                            "required": "Debe de escribir la Provincia",
+                            "maxlength": 30
+                        },
+                        "poblacion": {
+                            "required": "Debe de escribir la Población",
+                            "maxlength": 30
+                        },
+                        "cp": {
+                            "required": "Debe de escribir un Codigo Postal",
+                            "digits": "Solo se permiten numeros.",
+                            "minlength": "Codigo postal no valido",
+                            "maxlength": "Codigo postal no valido"
+                        },
+                        "tlf": {
+                            "required": "Este campo es obligatorio",
+                            "digits": "Telefono incorrecto",
+                            "minlength": "Telefono incorrecto",
+                            "maxlength": "Telefono incorrecto"
+                        },
+                        "contacto": {maxlength: "Numero maximo de caracteres es de 50", }
+                    }
+                });
+            });
+            /*
+            function EnviarFormulario() {
+                if ($("#altausuario").valid())
+                    document.forms[0].submit();
+            }
+    */
+        </script>
+
+    </head>
+    <body onload="inicia_accion();">
+        <div id="pagina">
+            <div id="header">   </div>
+            <div id="toolbar">      
+                <div class="m_tootlbar">                    
+                    <div id="toolbar_botones">
+                        <ul>
+                            <li>
+                                <a href="#" onclick="enviar_formulario();">
+                                    <span class="icono-32-aceptar"></span>
+                                    Aceptar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="usuarios.html">
+                                    <span class="icono-32-cancelar"></span>
+                                    Cancelar
+                                </a>                                
+                            </li>
+                        </ul>
+                        <div class="limpiar"></div>
+                    </div>
+                    <div class="toolbar_titulo icono-48-usuarios">
+                        <h2>Nuevo Usuario</h2>
+                    </div>                    
+                </div>
+            </div>
+            <div id="content">
+                <script>
+                    //<%if (error ) {%>
+                    //<div class="marcoError">
+                    //    <p><%=mensaje_Error%></p>
+                    //</div>
+                    // <% }%>
+                </script>
+                <form id="altausuario" method="POST" action="" onsubmit="enviar_formulario()">
+                    <input type="hidden" name="id"  />
+
+                    <input type="hidden" name="pass" id="pass" value=""/>
+                    
+                    <table ><!--login,  nombre,  apellidos,  fnac,  fu,  pass,  nif,  esAdm,  vis-->
+                        <tr>
+                            <td><label>Login:</label></td>
+                            <td><input type="text" name="login" id="login"/></td>
+                        </tr>
+                        <tr>
+                            <td><label>Nombre:</label></td>
+                            <td><input type="text" name="nombre" id="nombrer"/></td>
+                        </tr>
+                        <tr>
+                            <td><label>Apellidos:</label></td>
+                            <td><input type="text" name="apellidos" id="apellidos"/></td>
+                        </tr>
+                        <tr>
+                            <td> <label>Fecha Nacimiento:</label></td>
+                            <td>
+                                <input type="date" name="Fecha Nacimiento" id="fnac" />
+                            </td>
+                        </tr>
+                        <tr >
+                            <td ><label>NIF:</label></td>
+                            <td><input type="text" name="nif" id="nif"/></td>
+                        </tr>
+                        <tr>
+                            <td ><label>Rol de Adm:</label></td>
+                            <td>                      <!--<input type="text" name="cp" value="<%//=inicializa ? e.isEsAdm() : ""%>"/>-->
+                                <select name="esAdm" id="select_si_adm">
+                                    <option value="0">SI</option>
+                                    <option value="1">NO</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <input type="hidden" name="fu"  />
+                            </td>
+                        </tr> 
+
+                    </table>
+                </form>
+            </div>
+        </div>
+        <div id="pie">
+            <div id="pie_izq">
+                <h6>&copy; 2016</h6>
+            </div>
+            <div id="pie_dch">
+                <h6>José Javier García Romero</h6>
+            </div>            
+            <div class="limpiar"></div>
+        </div>
+        <script>
+            
+            function enviar_formulario()
+            {
+                alert("ENVIANDO");
+                var respuesta;
+                var datos=[];
+                datos.push(document.getElementById("login").value);
+                //datos.push(",");
+                datos.push( document.getElementById("nombrer").value);
+                //datos.push(",");
+                datos.push(document.getElementById("apellidos").value);
+                //datos.push(",");
+                datos.push(document.getElementById("fnac").value);
+                //datos.push(",");
+                datos.push( document.getElementById("nif").value);
+                //datos.push(",");
+                datos.push(document.getElementById("select_si_adm").value);
+                
+                
+                var xhttp = new XMLHttpRequest();
+                var action = window.location.href.split("?")[1];
+                if (action==="editar")
+                    xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/updateuser/"+datos.toString(),true);
+                if (action==="alta")
+                    xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/adduser/"+datos.toString(),true);
+                    
+                xhttp.send();
+                
+                xhttp.onreadystatechange = function ()
+                {                     
+                    respuesta = xhttp.responseText;
+                    window.location.href="http://localhost:8080/GestorCarteras_REST/usuarios.html";  
+                };
+                
+                return respuesta;
+            }
+            
+            function inicia_accion()
+            {
+                
+                var action = window.location.href.split("?")[1];
+                var login=action.split("=")[1];
+                action=action.split("=")[0];
+               //alert (action);
+                if (action==="editar")
+                {
+                  // alert("LOGIN"+login);
+                   Cargar_datos(login);                 
+                   
+                }
+                if(action==="alta")
+                {
+                    
+                }
+            }
+            
+            function Cargar_datos(login) 
+            {
+               
+                
+                var xhttp = new XMLHttpRequest();
+                //alert("LOGINN"+login);
+                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/userlogin/"+login,true);
+                xhttp.send();
+                xhttp.onreadystatechange = function ()
+                {                     
+                    var datos = xhttp.responseText; 
+                    
+                    document.getElementById("login").value = datos.split(",")[0];
+                    document.getElementById("nombrer").value = datos.split(",")[1];
+                    document.getElementById("apellidos").value = datos.split(",")[2];
+                    var fechahora=datos.split(",")[3];
+                    var fecha="";
+                    if(typeof(fechahora)!=="undefined")
+                    {                        
+                        fecha=fechahora.split(" ")[0];                       
+                    }
+                    document.getElementById("fnac").value = fecha;
+                    document.getElementById("nif").value = datos.split(",")[5];//datos[4];
+                    var select=document.getElementById("select_si_adm");
+                     //alert(datos.split(",")[6]);
+                    if (datos.split(",")[6] === "true")
+                    {
+                       select.selectedIndex=0;
+                    } 
+                    else
+                    {
+                        select.selectedIndex=1;
+                    }
+                };
+            };
+            
+           
+
+            function accion_formulario()
+            {}
+                /*
+                var action = window.location.href.split("?")[1]; // sera alta o editar 
+                alert (action);
+                //var datos = Recuperar_datos();
+                if (action === "alta")
+                {
+                    //da de alta.
+                    alert("alta");
+                    var datos=[];
+                    datos.push(document.getElementById("login").value);
+                    datos.push( document.getElementById("nombre").value);
+                    datos.push(document.getElementById("apellidos").value);
+                    datos.push(document.getElementById("fnac").value);
+                    datos.push( document.getElementById("nif").value);
+                    datos.push(document.getElementById("select_si_adm").value);
+                    dar_de_alta(datos);
+                    
+                } else
+                {
+                    if (action.indexof("editar")!==-1)
+                    {
+                        var datos=cargar_datos();
+                        document.getElementById("id").value = datos.split(",")[0];
+                        document.getElementById("login").value = datos.split(",")[1];
+                        document.getElementById("nombre").value = datos.split(",")[2];
+                        document.getElementById("apellidos").value = datos.split(",")[3];
+                        document.getElementById("fnac").value = "";//datos[4];
+                        document.getElementById("nif").value = datos.split(",")[5];//datos[4];
+                        if (datos[6] === "TRUE")
+                        {
+                            //document.getElementById("select_si_adm").value=;//datos[4];
+                        } else
+                        {
+
+                        }
+                        //actualiza
+
+                    }
+                    else
+                    {
+                        alert("Error.");
+                    }
+        */
+              //  }
+                /*action="<% if (!inicializa)
+                 out.print("acciones/altausuario.action.jsp"); 
+                 else out.print("acciones/editarusuario.action.jsp");
+                 %>">">
+                 <% if (e != null && e.getId() != -1) {%>
+                 <input type="hidden" name="id" value="<%=e.getId()%>" />
+                 <% }%>
+                 value="<%=inicializa ? e.getLogin(): "
+                 value="<%=inicializa ? e.getNombre() : ""%>
+                 value="<%=inicializa ? e.getApellidos(): ""%>"
+                 value="<%
+                 if (inicializa)
+                 {
+                 SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");
+                 out.print(fecha.format(e.getFnac().getTime()));
+                 }
+                 else
+                 {
+             
+                 }
+                 %>"
+                 value="<%=inicializa ? e.getNif() : ""%>"
+                 value="<%
+                 SimpleDateFormat fecha = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                 out.print(fecha.format(new Date()));
+                 %>"/>
+                 */
+           // }
+
+            /*
+             <%
+             Usuarios e = null;
+             boolean inicializa = false;
+             boolean error=false;
+             String mensaje_Error="";
+             String id_usuario=request.getParameter("update");    
+         
+             if (id_usuario!=null)
+             {          
+             try
+             {
+             inicializa=true;
+             int id=Integer.parseInt(id_usuario);
+             e=Op_Usuarios.find(id);
+         
+         
+             }
+             catch(Exception ex)
+             {
+             inicializa=false;
+             error=true;
+             mensaje_Error=ex.getMessage().toString();
+         
+             }
+             }
+         
+         
+         
+             //int edit_id = -1;
+         
+         
+             //inicializa = true;
+         
+             //e = (Usuarios) session.getAttribute("usuario");
+         
+         
+         
+             %>
+             */
+            
+        </script>
+    </body>
+
+</html>
+

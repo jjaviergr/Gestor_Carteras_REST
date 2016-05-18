@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Comerciales - Iniciar Sesion.</title>
+        <link rel="shortcut icon" href="./favicon.ico" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/estilos.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/iconos.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/posicionamiento.css" />
+    </head>
+    <body>
+        <div id="pagina">
+            <div id="header">                
+            </div>
+            <div id="toolbar">      
+                <div class="m_tootlbar">                    
+                    <div id="toolbar_botones">
+                        <ul>
+
+                        </ul>
+                        <div class="limpiar"></div>
+                    </div>
+                    <div class="toolbar_titulo icono-48-login">
+                        <h2>Iniciar Sesión</h2>
+                    </div>                    
+                </div>
+            </div>
+            <div id="content">                
+                <form method="GET">
+                    <table class="tablaLogin">
+                        <thead>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><label>Usuario:</label></td>
+                                <td><input type="text" name="usuario" id="login"/></td>
+                            </tr>
+                            <tr>
+                                <td><label>Contraseña:</label></td>
+                                <td><input type="password" name="pass" id="pass"/></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center">
+                                    <input type="button" value="Iniciar Sesión" onclick="createRequest()"></td>                                
+                            </tr>                            
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                </form>
+                <script>
+                    function createRequest() {
+                        var xhttp;
+                       
+                        var str1=document.getElementById("login").value;
+                        var str2=document.getElementById("pass").value;
+                        
+                        xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function () 
+                        { 
+                            if (xhttp.readyState === 4 && xhttp.status === 200) 
+                            {
+                                var respuesta=xhttp.responseText;
+                                  //alert('hola');                              
+                                    
+                                switch (respuesta)
+                                {
+                                    case "1":
+                                        mensajeError = "Debe escribir un usuario.";
+                                        break;
+                                    case "2":
+                                        mensajeError = "La contraseña no puede estar en blanco.";
+                                        break;
+                                    case "3":
+                                        mensajeError = "Usuario o contraseña incorrecta.";
+                                        break;
+
+                                    default:
+                                        window.location="http://localhost:8080/GestorCarteras_REST/"+respuesta;break
+                                        
+                                }
+
+                                var element=document.getElementById("error");
+                                element.innerHTML=mensajeError;
+                          
+                                
+                                    
+                                 
+                            }
+                        };
+                        xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/valida/"+str1+","+str2, true);
+                       
+                        
+                        xhttp.send();
+                        
+                        
+                    }
+                    
+                    
+                </script>
+                <div class="error"><p id="error"></p></div>
+
+
+            </div>
+        </div>
+        <div id="pie">
+            <div id="pie_izq">
+                <h6>&copy; 2016</h6>
+            </div>
+            <div id="pie_dch">
+                <h6>José Javier García Romero</h6>
+            </div>            
+            <div class="limpiar"></div>
+        </div>
+
+    </body>
+</html>
+

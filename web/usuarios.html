@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Administración de usuarios</title>
+        <link rel="shortcut icon" href="./favicon.ico" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/estilos.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/iconos.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/posicionamiento.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/nyroModal.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/ui/jquery-ui-1.8.21.custom.css" />
+        <!-- <script type="text/javascript" src="js/util.js"></script>    -->
+        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>        
+        <script type="text/javascript" src="js/jquery-ui-1.8.21.custom.min.js"></script>
+        <script type="text/javascript" src="js/jquery.nyroModal.custom.min.js"></script>
+        <script type="text/javascript" src="js/jquery.nyroModal-ie6.min.js"></script>
+        <script >
+
+        </script>
+    </head>
+    <body  onload="onload()">
+        <div id="pagina">            
+             <div id="header">                
+            </div>
+            <div id="toolbar">      
+                <div class="m_tootlbar">                    
+                    <div id="toolbar_botones">
+                        <ul>
+                            <li>
+                                <a href="nuevo-usuario.html?alta">
+                                    <span class="icono-32-add"></span>
+                                    Añadir Usuario
+                                </a>
+                            </li><!--
+                                <li>
+                                    <a href="acciones_usuarios_ed.jsp">
+                                        <span class="icono-32-usuarios"></span>
+                                        Editar Usuario
+                                    </a>
+                                </li>-->
+                            <li>
+                                <a href="#" onclick="$('#frmBuscar').dialog('open');">
+                                    <span class="icono-32-visitas"></span>
+                                    Buscar Usuario
+                                </a>                                
+                            </li>
+
+                            <li>
+                                <a href="acciones/usuarios_cambiar_pass.html">
+                                    <span class="icono-32-perfil"></span>
+                                    Cambiar Credenciales Usuario
+                                </a>                                
+                            </li>                            
+                            <li>
+                                <a href="login.html">
+                                    <span class="icono-32-salir"></span>
+                                    Salir 
+                                </a>                                
+                            </li>
+
+                        </ul>
+                        <div class="limpiar"></div>
+                    </div>
+                    <div class="toolbar_titulo icono-48-menu">
+                        <h2>Menu de Administración</h2>
+                    </div>                    
+                </div>
+            </div>
+            <div id="content">
+                <table class="listado">
+                    <thead>
+                        <tr>
+                            <th style="display:none">Id</th>
+                            <th width="80p">Login</th>
+                            <th>Nombre</th>
+                            <th width="80p">Apellidos</th>
+                            <th width="200p">Fecha Nacimiento</th>
+                            <th width="80p">Fecha Ultimo Acceso</th>
+                            <th width="80p">Oper.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2" id="nusuarios">
+
+                            </td>
+                            <td colspan="5">
+                                <ul id="paginar" class="paginar">
+
+                                </ul>                                
+                                <span class="limpiar"></span>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div id="pie"></div>
+                <div class="limpiar"></div>
+                 
+            </div>
+          
+        </div>
+        <script>
+
+
+        </script>
+        <div id="frmBuscar"  onsubmit="Buscar_Usuario();">
+            <form method="POST" action="">
+                <table style="padding: 20px">
+                    <tr>
+                        <td width="100">Login:</td>
+                        <td width="400"><input type="text" name="login" id="login_buscado"/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <input type="submit" value="Buscar Usuario"/>
+                        </td>
+                    </tr>
+
+                </table>
+            </form>
+        </div>
+         <script>
+            function Buscar_Usuario()
+            {
+                var respuesta; 
+                var login = document.getElementById("login_buscado").value;
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/userlogin/"+login,true);
+                xhttp.send();
+                xhttp.onreadystatechange = function ()
+                {                     
+                    respuesta = xhttp.responseText;                                   
+                };
+                
+                xhttp.onload=function()
+                {
+                    //alert("http://localhost:8080/GestorCarteras_REST/rest/App_Service/userlogin/"+login+"---"+respuesta);
+                    if(respuesta!=="No existe")
+                    {
+                      //alert("EXISTE :"+respuesta.split(",")[0]);
+                      window.location.href="http://localhost:8080/GestorCarteras_REST/nuevo-usuario.html?editar="+respuesta.split(",")[0];                      
+                    }
+                    else
+                    {
+                        var p=document.createElement("P");
+                        p.class="ui-state-error ui-corner-all";
+                        p.style="padding: 0.7em; font-size: 1.1em; text-align: center";
+                        var element=document.createTextNode("No existe ningun usuario con ese NIF");
+                        p.appendChild(element);
+                         
+                        var error=document.createElement("DIV");
+                        error.id="error4";
+                        error.title="Error al buscar";
+                        error.appendChild(p);
+                       
+                        //error.appendChild(p);
+                        var raiz=document.getElementById("content");
+                        raiz.appendChild(error);
+                    }
+                };
+            }
+           
+            function Traete_Lista_Usuarios(pos_act, n_users)
+            {
+                var a = [];
+                var respuesta;
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/listusers/" + pos_act + "," + n_users, true);
+                xhttp.send();
+                xhttp.onreadystatechange = function ()
+                {
+                    respuesta = xhttp.responseText;
+                };
+
+                xhttp.onload = function ()
+                {
+                    var r = respuesta.split("<list xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xs:string\">");
+                    r.shift();
+                    //alert(r);
+                    for (i = 0; i < r.length; i++)
+                    {
+                        a.push(r[i].split("</list>")[0]);
+                    }
+                    //alert(a[0]);
+                    // var raiz = document.getElementById("lista_usuarios");
+                    // raiz.value = r;*/
+                    var list_users = [];
+                    var sublist = [];
+                    a = a.toString();
+
+                    var aux = a.split(',');
+                    // ("AUX"+aux);
+                    for (i = 0; i < aux.length; i++)
+                    {
+                        if (i % 7 === 0)
+                        {
+                            list_users.push(sublist);
+                            sublist = [];
+                        }
+                        sublist.push(aux[i]);
+                    }
+                    list_users.push(sublist);
+
+                    //alert("LIST_USERS"+list_users);
+                    //alert(list_users.length);
+                    // alert(list_users.length);
+                    //rellenar tabla
+                    var tbody = document.getElementsByTagName("TBODY")[0];
+                    var subusers;
+                    var tr;
+                    var td;
+                    var element;
+
+                    for (var i = 1; i < list_users.length; i++)
+                    {
+                        tr = document.createElement("TR");
+                        sublist = list_users[i];
+                        //alert(sublist.length);
+                        subusers = sublist;
+                        for (var j = 0; j < 4; j++)
+                        {
+                            td = document.createElement("TD");
+                            element = document.createTextNode(subusers[j]);
+                            td.style = "text-align: center";
+                            td.textContent = subusers[j];
+
+                            tr.appendChild(td);
+                        }
+                        for (var j = 5; j < subusers.length; j++)
+                        {
+                            td = document.createElement("TD");
+                            element = document.createTextNode(subusers[j]);
+                            td.style = "text-align: center";
+                            td.textContent = subusers[j];
+
+                            tr.appendChild(td);
+                        }
+                        tbody.appendChild(tr);
+                    }
+                };
+                xhttp.onprogress = function ()
+                {
+                    //cargar nº usuarios
+                    actualiza_paginador();
+                };
+
+            }
+
+           
+            function muestra_paginador(n_usuarios)
+            {
+                var nPaginas = (Number(n_usuarios) / 10);
+                //alert(nPaginas);
+                if ((n_usuarios % 10 !== 0)&&(nPaginas>10))
+                {
+                    nPaginas++;
+                }
+                var raiz = document.getElementById("paginar");
+                
+                if (raiz.getElementsByTagName("A").length===0) 
+                {
+                    for (var i = 0; i < nPaginas; i++)
+                    {
+                        var li = document.createElement("LI");
+                        var a = document.createElement("A");
+                       var element=document.createTextNode(i+1);
+                       a.appendChild(element);
+                        a.href = "usuarios.html?pag=" + i;
+                        li.appendChild(a);
+                        raiz.appendChild(li);
+                    }
+                }
+            }
+
+            function actualiza_paginador()
+            {
+                var n_usuarios;
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/numero_usuarios", true);
+                xhttp.send();
+                xhttp.onreadystatechange = function ()
+                {
+                    if (xhttp.readyState === 4 && xhttp.status === 200)
+                    {
+                        n_usuarios = xhttp.responseText;
+                    }
+                };
+
+                xhttp.onload = function ()
+                {
+                    muestra_paginador(n_usuarios);
+                    var ul_usuarios=document.getElementById("nusuarios");
+                    ul_usuarios.innerHTML="Nº de Usuarios: "+n_usuarios;
+                };
+            };
+
+            function onload()
+            {
+                Traete_Lista_Usuarios(0, 10);// tambien actualiza el navagador.
+            
+                pie();
+            }
+            
+            $(document).ready(function ()
+            {
+                $(".nyroModal").nyroModal();
+                $("input:submit").button();
+                $("#frmBuscar").dialog({autoOpen: false, modal: true, resizable: false});
+                $("#error4").dialog({show: "Scale", hide: "Flod", autoOpen: true, modal: true, width: 350, height: 'auto', resizable: false,
+                    buttons: {"Aceptar":
+                                function ()
+                                {
+                                    $(this).dialog('close');
+                                }
+                    }
+                });
+            });          
+
+            function Confirmar()
+            {
+                return confirm('¿Estas seguro que deseas borrar al usuario?');
+            }
+        </script>
+    </body>
+</html>
+

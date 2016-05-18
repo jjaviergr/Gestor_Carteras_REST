@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Comerciales - Gestión de Empresas.</title>
+        <link rel="shortcut icon" href="./favicon.ico" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/estilos.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/iconos.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/posicionamiento.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/nyroModal.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/ui/jquery-ui-1.8.21.custom.css" />
+        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>        
+        <script type="text/javascript" src="js/jquery-ui-1.8.21.custom.min.js"></script>
+        <script type="text/javascript" src="js/jquery.nyroModal.custom.min.js"></script>
+        <script type="text/javascript" src="js/jquery.nyroModal-ie6.min.js"></script>
+        <script >
+            $(document).ready(function () 
+            {
+                $(".nyroModal").nyroModal();
+                $("input:submit").button();
+                $("#frmBuscar").dialog({autoOpen: false, modal: true, resizable: false});                    
+                $("#error4").dialog({show: "Scale", hide: "Flod", autoOpen: true, modal: true, width: 350, height: 'auto', resizable: false,
+                    buttons: {"Aceptar":
+                                function () 
+                                {
+                                    $(this).dialog('close');
+                                }
+                            }
+                });
+            
+            });
+            function Confirmar() {
+                return confirm('¿Estas seguro que deseas borrar la empresa?');
+            }
+        </script>
+    </head>
+    <body onload="cargar_empresas(0,10);" onloadstart="pie();">
+        <div id="pagina">
+            <div id="header"></div>
+            
+            <div id="toolbar">      
+                <div class="m_tootlbar">                    
+                    <div id="toolbar_botones">
+                        <ul>
+                            <li>
+                                <a href="nueva-empresa.html?nueva">
+                                    <span class="icono-32-add"></span>
+                                    Añadir
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="$('#frmBuscar').dialog('open');">
+                                    <span class="icono-32-buscar"></span>
+                                    Buscar
+                                </a>
+                            </li>                            
+                            <li>
+                                <a href="menu.html">
+                                    <span class="icono-32-volver"></span>
+                                    Volver
+                                </a>                                
+                            </li>
+                        </ul>
+                        <div class="limpiar"></div>
+                    </div>
+                    <div class="toolbar_titulo icono-48-empresas">
+                        <h2>Empresas</h2>
+                    </div>                    
+                </div>
+            </div>
+            <div id="content">
+                <table class="listado">
+                    <thead>
+                        <tr>
+                            <th style="display:none">Id</th>
+                            <th width="80p">C.I.F.</th>
+                            <th>Nombre</th>
+                            <th width="80p">Tlf</th>
+                            <th width="200p">Per.Contacto</th>
+                            <th width="80p">Alta</th>
+                            <th width="80p">Oper.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+ <!-- 
+                        <tr>
+                          <td style="display:none"></td>
+                            <td></td>
+                            <td></td>
+                            <td align="center"></td>
+                            <td></td>
+                            <td align="center"></td>
+                            <td align="center">
+                                <a id="vinculo_editar_empresa">
+                                    <img  src="img/icono16/editar.png" alt="editar" title="Editar la empresa" />
+                                </a>
+                                <a  onclick="return Confirmar();">
+                                    <img src="img/icono16/borrar.png" alt="editar" title="Borrar la empresa" />
+                                </a>
+                                <a class="nyroModal" id="vinculo_ver_empresa">
+                                    <img src="img/icono16/ver.png" alt="editar" title="Ver ficha de empresa" />
+                                </a>
+                            </td>
+                        </tr>
+                        -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2">
+                                <h5 id="n_empresas"></h5>
+                            </td>
+                            <td colspan="5">
+                                <ul class="paginar" id="paginar">
+
+                                </ul>                                
+                                <span class="limpiar"></span>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="limpiar"></div>
+            </div>
+        </div>
+        <!--<jsp:directive.include file="pie.jsp" />-->
+        <div id="frmBuscar" title="Buscar Empresa">
+            <form method="POST"  onsubmit="buscarEmpresa();">
+                <table style="padding: 20px">
+                    <tr>
+                        <td width="100">C.I.F.:</td>
+                        <td width="400"><input type="text" name="cif" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <input type="submit" value="Buscar Empresa"/>
+                        </td>
+                    </tr>
+
+                </table>
+            </form>
+        </div>
+   
+        <script>
+            function cargar_empresas(pos_act,n_empresas)
+            {
+               
+                var respuesta;
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/listempresas/" + pos_act + "," + n_empresas, true);
+                xhttp.send();
+                xhttp.onreadystatechange = function ()
+                {
+                    respuesta = xhttp.responseText;
+                };
+
+                xhttp.onload = function ()
+                {
+                     var aux = [];
+                    var r = respuesta.split("<list xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xs:string\">");
+                    r.shift();
+                    //alert(r);
+                    for (var i = 0; i < r.length; i++)
+                    {
+                        aux.push(r[i].split("</list>")[0]);
+                    }
+                    //alert(a[0]);
+                    // var raiz = document.getElementById("lista_usuarios");
+                    // raiz.value = r;*/
+                    var list_empresas = [];
+                    var sublist = [];
+                    aux = aux.toString();
+
+                    var aux = aux.split(',');
+                    // ("AUX"+aux);
+                    for (i = 0; i < aux.length; i++)
+                    {
+                        if (i % 10 === 0)
+                        {
+                            list_empresas.push(sublist);
+                            sublist = [];
+                        }
+                        sublist.push(aux[i]);
+                    }
+                    list_empresas.push(sublist);
+                    list_empresas.shift();
+                    
+                    ////alert("LIST_E"+list_empresas[0]);
+                    ////alert(list_empresas.length);
+                    // alert(list_users.length);
+                    //rellenar tabla
+                    var tbody = document.getElementsByTagName("TBODY")[0];
+                    var subempresas;
+                    var tr;
+                    var td;
+                    var element;
+
+                    for (var i = 0; i < list_empresas.length; i++)
+                    {
+                        tr = document.createElement("TR");
+                        sublist = list_empresas[i];
+                        //alert(sublist.length);
+                        subempresas = sublist;
+                        //alert(subempresas);
+                        for (var j = 0; j < 2; j++)
+                        {
+                            td = document.createElement("TD");
+                            element = document.createTextNode(subempresas[j]);
+                            td.style = "text-align: center";
+                            td.textContent = subempresas[j];
+
+                            tr.appendChild(td);
+                        }
+                          td = document.createElement("TD");
+                        element = document.createTextNode(subempresas[6]);
+                        td.style = "text-align: center";
+                        td.textContent = subempresas[6];
+                        tr.appendChild(td);  
+                         
+                        //select   
+                        td = document.createElement("TD");
+                        element = document.createTextNode(subempresas[9]);
+                        td.style = "text-align: center";
+                        td.textContent = subempresas[9];
+                        tr.appendChild(td);
+                        
+                        td = document.createElement("TD");
+                        element = document.createTextNode(subempresas[8]);
+                        td.style = "text-align: center";
+                        td.textContent = subempresas[8];
+                        tr.appendChild(td);
+                        
+                        /**botonera**/
+                        td = document.createElement("TD");
+                        td.style = "text-align: center";
+                        
+                        var a=document.createElement("A");
+                        a.href="nueva-empresa.html?editar="+subempresas[0];
+                        var img=document.createElement("IMG");                        
+                        img.src="img/icono16/editar.png";                        
+                        img.alt="editar";
+                        img.title="Editar la empresa";
+                        a.appendChild(img);
+                        
+                        td.appendChild(a);
+                        tr.appendChild(td);
+                        
+                        a=document.createElement("A");                        
+                        a.onclick="return Confirmar();";
+                        img=document.createElement("IMG");
+                        img.src="img/icono16/borrar.png";
+                        img.alt="editar";
+                        img.title="Borrar la empresa";
+                        a.appendChild(img);
+                        
+                        td.appendChild(a);
+                        tr.appendChild(td);
+                        
+                        a=document.createElement("A");
+                        a.href="verEmpresa.html";
+                        a.class="nyroModal";
+                        img=document.createElement("IMG");
+                        img.src="img/icono16/ver.png";
+                        img.alt="editar";
+                        img.title="Ver ficha de empresa";
+                        a.appendChild(img);
+                        
+                        td.appendChild(a);
+                        tr.appendChild(td);
+                        
+                        
+                             
+                        tbody.appendChild(tr);
+                    }
+                };
+                xhttp.onprogress = function ()
+                {
+                    //cargar nº usuarios
+                    //actualiza_paginador();
+                };
+            };
+            
+            function pie()
+            {
+                var div_pie = document.getElementById("pie");
+                var div_pie_izq = document.createElement("DIV");
+                var div_pie_dch = document.createElement("DIV");
+
+
+                div_pie_izq.id = "pie_izq";
+                div_pie_dch.id = "pie_dch";
+
+                var h6i = document.createElement("H6");
+                var text = document.createTextNode("2016");
+                h6i.appendChild(text);
+
+                div_pie_izq.appendChild(h6i);
+
+                div_pie.appendChild(div_pie_izq);
+
+                var h6d = document.createElement("H6");
+                var text2 = document.createTextNode("José Javier García Romero");
+                h6d.appendChild(text2);
+                div_pie_dch.appendChild(h6d);
+
+                div_pie.appendChild(div_pie_dch);
+            };
+            
+             function actualiza_paginador()
+            {
+                var n_empresas;
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/numero_empresas", true);
+                xhttp.send();
+                xhttp.onreadystatechange = function ()
+                {
+                    if (xhttp.readyState === 4 && xhttp.status === 200)
+                    {
+                        n_empresas = xhttp.responseText;
+                    }
+                };
+
+                xhttp.onload = function ()
+                {
+                    muestra_paginador(n_empresas);
+                    var ul_empresas=document.getElementById("n_empresas");
+                    ul_empresas.innerHTML="Nº de Usuarios: "+n_empresas;
+                };
+            };
+            
+            function muestra_paginador(n_empresas)
+            {
+                var nPaginas = (Number(n_empresas) / 10);
+                //alert(nPaginas);
+                if ((n_empresas % 10 !== 0)&&(nPaginas>10))
+                {
+                    nPaginas++;
+                }
+                var raiz = document.getElementById("paginar");
+                
+                if (raiz.getElementsByTagName("A").length===0) 
+                {
+                    for (var i = 0; i < nPaginas; i++)
+                    {
+                        var li = document.createElement("LI");
+                        var a = document.createElement("A");
+                        var element=document.createTextNode(i+1);
+                       a.appendChild(element);
+                        a.href = "empresas.jsp?pag=" + i;
+                        li.appendChild(a);
+                        raiz.appendChild(li);
+                    }
+                }
+            }
+            
+/*
+ *      <%
+    if (request.getParameter("error") != null
+            && request.getParameter("error").equals("4")) { %>
+        <div id="error4" title="Error al buscar">
+            <p class="ui-state-error ui-corner-all" 
+               style="padding: 0.7em; font-size: 1.1em; text-align: center">
+                No existe ninguna empresa con el C.I.F. facilitado
+            </p>    
+        </div>
+        <% }%>
+ * function buscarEmpresa(){}
+ * <jsp:directive.include file="pie.jsp" />
+                                    <% for (int i = nPaginas - 1; i >= 0; i--) {%>
+                                    <li><a href="empresas.jsp?pag=<%=i%>"><%=(i + 1)%></a></li>
+                                        <% } %>
+ * NºEmpresas: <%=n_empresas%>
+ * <td style="display:none"><%=e.getId()%></td>
+                            <td><%=e.getCif()%></td>
+                            <td><%=e.getNombre()%></td>
+                            <td align="center"><%=e.getTlf()%></td>
+                            <td><%=e.getContacto()%></td>
+                            <td align="center"><%
+                                   SimpleDateFormat fecha = new SimpleDateFormat("dd/MM/yyyy");
+                                   out.print(fecha.format(e.getFechaAlta().getTime()));%></td>
+                            <td align="center">
+                                <a href="nueva-empresa.jsp?update=<%=e.getId()%>">
+                                    <img src="img/icono16/editar.png" alt="editar" title="Editar la empresa" />
+                                </a>
+                                <a href="acciones/borrarEmpresa.action.jsp?idEmpresa=<%=e.getId()%>" onclick="return Confirmar();">
+                                    <img src="img/icono16/borrar.png" alt="editar" title="Borrar la empresa" />
+                                </a>
+                                <a class="nyroModal" href="verEmpresa.jsp?idEmpresa=<%=e.getId()%>">
+                                    <img src="img/icono16/ver.png" alt="editar" title="Ver ficha de empresa" />
+                                </a>
+                            </td>
+ * <% for (int i = 0; i < listado.size(); i++) {
+                                Empresas e = (Empresas) listado.get(i);
+                        %>
+<%
+    List listado = Op_Empresas.list();
+    int n_empresas = Op_Empresas.list().size();
+    int nPaginas = (n_empresas / 10);
+    if (n_empresas % 10 != 0) {
+        nPaginas++;
+    }
+    
+%>*/
+</script>
+     <div id="pie">
+            <div id="pie_izq">
+                <h6>&copy; 2016</h6>
+            </div>
+            <div id="pie_dch">
+                <h6>José Javier García Romero</h6>
+            </div>            
+            <div class="limpiar"></div>
+        </div>    
+    </body>
+</html>
+
