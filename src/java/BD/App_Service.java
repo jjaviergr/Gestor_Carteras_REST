@@ -9,6 +9,7 @@ package BD;
  *
  * @author pc
  */
+import POJOS.Empresas;
 import POJOS.Usuarios;
 import es.cartera.Md5;
 import java.io.IOException;
@@ -38,6 +39,141 @@ public class App_Service {
     private static final String SUCCESS_RESULT = "Exito";
     private static final String FAILURE_RESULT = "Fracaso";
 
+    @GET
+    @Path("/updateEmpresa/{paquete}")
+    @Produces(MediaType.TEXT_HTML)
+    public String Update_Empresa(@PathParam("paquete") String paquete)
+    {
+        String exito="fracaso";
+         String[] datos=paquete.split(",");
+         String CIF=paquete.split(",")[0];
+         Empresas em=Op_Empresas.find(CIF);
+         if (em!=null)
+         {
+             int telefono=-1;
+            try
+            {
+                telefono=Integer.parseInt(datos[7]);
+            }
+            catch(Exception e)
+            {
+                  System.err.print("Exception con el telefono en servicio Updatempresa " + e);
+            }
+            int comercial=-1;
+            try
+            {
+                Usuarios u=Op_Usuarios.find_by_login(datos[8]);
+                if (u!=null)
+                {
+                    comercial=u.getId();
+                }
+            }
+            catch(Exception e)
+            {
+                 System.err.print("Exception con el comercialen servicio UpdateEmpresa  "+e);
+            }
+            
+            
+            Date Dfecha=null;
+            SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");            
+            try 
+            {
+                Dfecha= fecha.parse(datos[9]);
+            } 
+            catch (ParseException ex) 
+            {
+                System.err.print("Exception con la fecha en servicio UpdateEmpresa " + ex);
+            }
+            Empresas e=new Empresas(datos[0],datos[1],datos[2],datos[3],datos[4],datos[5],telefono,comercial,Dfecha,datos[7]);
+            e.setId(em.getId());
+            
+            Op_Empresas.update(e);
+            
+            exito="ok";
+         }
+        
+        return(exito);
+            
+    }
+    
+    @GET
+    @Path("/empresabycif/{cif}")
+    @Produces(MediaType.TEXT_HTML)
+    public String EmpresaByCIF(@PathParam("cif") String CIF)
+    {
+        Empresas e=BD.Op_Empresas.find(CIF);
+        return (e.toString());
+    }
+    
+    @GET
+    @Path("/addempresa/{paquete}")
+    @Produces(MediaType.TEXT_HTML)
+    public String AddEmpresa(@PathParam("paquete") String paquete)
+    {
+            String[] datos=paquete.split(",");
+        
+        //String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta
+         //                                                                                     5       6               7
+            int telefono=-1;
+            try
+            {
+                telefono=Integer.parseInt(datos[7]);
+            }
+            catch(Exception e)
+            {
+                  System.err.print("Exception con el telefono en servicio AddEmpresa " + e);
+            }
+            int comercial=-1;
+            try
+            {
+                Usuarios u=Op_Usuarios.find_by_login(datos[8]);
+                if (u!=null)
+                {
+                    comercial=u.getId();
+                }
+            }
+            catch(Exception e)
+            {
+                 System.err.print("Exception con el comercialen servicio AddEmpresa  "+e);
+            }
+            
+            
+            Date Dfecha=null;
+            SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");            
+            try 
+            {
+                Dfecha= fecha.parse(datos[9]);
+            } 
+            catch (ParseException ex) 
+            {
+                System.err.print("Exception con la fecha en servicio AddEmpresa " + ex);
+            }                       //empresa//String cif, String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta, String contacto
+                                                    //0              1                 2               3                  4            5        6           8              9               7
+                                    //form   //cif,              nombre,           direccion,        prov,           poblacin,         cp,     tlf,     contacto,     comercial,   fechaAlta
+                                    //         0                   1                 2                 3                4               5       6          7              8           9                       
+            Empresas e=new Empresas(datos[0],datos[1],datos[2],datos[3],datos[4],datos[5],telefono,comercial,Dfecha,datos[7]);
+            
+            String mensaje="";
+            try
+            {
+                Op_Empresas.add(e);
+                mensaje="ok";
+            }
+            catch(Exception ex)
+            {
+                mensaje="problema al insertar empresa en servicio "+ex;
+                System.err.print("problema al insertar empresa en servicio "+ex);
+            }
+            finally
+            {
+                return mensaje;
+            }
+            
+        
+    }
+    
+    
+    
     @GET
     @Path("/valida/{login},{pass}")
     @Produces(MediaType.TEXT_HTML)

@@ -85,11 +85,12 @@
                     }
                 });
             });
-
+     /*
             function EnviarFormulario() {
                 if ($("#altaempresa").valid())
                     document.forms[0].submit();
             }
+     */
         </script>
 
     </head>
@@ -101,7 +102,8 @@
                     <div id="toolbar_botones">
                         <ul>
                             <li>
-                                <a href="#" onclick="EnviarFormulario();">
+                                <!--<a href="#" onclick="EnviarFormulario();">-->
+                                <a href="#" onclick="enviar_formulario();">    
                                     <span class="icono-32-aceptar"></span>
                                     Aceptar
                                 </a>
@@ -130,6 +132,8 @@
                 </script>
                 <form id="altaempresa" method="POST" onsubmit="enviar_formulario();">
                     <table class="altaEmpresa">
+                        <!-- //cif+","+nombre+","+direccion+","+provincia+","+poblacion+","+cp+","+tlf+","+comercial+","+fechaAlta+","+contacto
+                   //  0          1         2               3             4         5      6        7                8          9-->
                         <tr>
                             <td width="130"><label>C.I.F.:</label></td>
                             <td><input type="text" id="cif" /></td>
@@ -158,11 +162,7 @@
                             <td><label>Telefono:</label></td>
                             <td><input type="text" id="tlf" /></td>
                         </tr>
-                        <tr>
-                            <td><label>Per.Contacto:</label></td>
-                            <td><input type="text" id="contacto" /></td>
-                        </tr>
-                        <tr>
+                         <tr>
                             <td><label>Comercial :</label></td>
                             <td>
                                 <select id="comercial">
@@ -172,10 +172,16 @@
                         </tr>
                         <tr>
                             <td><label>Fecha Alta:</label></td>
-                            <td><input type="text" id="falta" readonly="readonly" />
+                            <td><input type="date" id="falta"  />
 
                             </td>
-                        </tr>                                                            
+                        </tr>      
+                        <tr>
+                            <td><label>Per.Contacto:</label></td>
+                            <td><input type="text" id="contacto" /></td>
+                        </tr>
+                       
+                                                                              
                     </table>
                 </form>
             </div>
@@ -191,7 +197,7 @@
         </div>
         <script>
             function enviar_formulario()
-            {
+            {//cif+","+nombre+","+direccion+","+provincia+","+poblacion+","+cp+","+tlf+","+comercial+","+fechaAlta+","+contacto
                 alert("ENVIANDO");
                 var respuesta;
                 var datos = [];
@@ -207,16 +213,24 @@
                 //datos.push(",");
                 datos.push(document.getElementById("cp").value);
                 datos.push(document.getElementById("tlf").value);
-                datos.push(document.getElementById("contacto").value);
                 datos.push(document.getElementById("comercial").value);
                 datos.push(document.getElementById("falta").value);
+                datos.push(document.getElementById("contacto").value);
+              
 
                 var xhttp = new XMLHttpRequest();
-                var action = window.location.href.split("?")[1];
-                if (action === "editar")
+                var action = window.location.href.split("?")[1].split("=")[0];
+                
+                if (action==="editar")
+                {
                     xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/updateEmpresa/" + datos.toString(), true);
+                }
+                
                 if (action === "alta")
+                {
+                    alert(datos);
                     xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/addempresa/" + datos.toString(), true);
+                }
 
                 xhttp.send();
 
@@ -228,10 +242,11 @@
 
                 return respuesta;
             }
-
+            
+            var pasada=0;
             function cargar_personas_select()
             {
-
+              
                 var xhttp = new XMLHttpRequest();
                 var respuesta;
                 //alert("LOGINN"+login);
@@ -239,10 +254,11 @@
                 xhttp.send();
                 xhttp.onreadystatechange = function ()
                 {
-                    respuesta = xhttp.responseText;
+                    
                 }
                 xhttp.onload = function ()
                 {
+                    respuesta = xhttp.responseText;
                     var r;
                     if ((respuesta !== null) || (respuesta !== ""))
                     {
@@ -277,9 +293,12 @@
                         //alert(list_users.length);
                         //alert(sublist[2]);
                         list_users.shift();
+                        alert(list_users.length);
                         var option;
-                        if (list_users !== "")
+                      
+                        if ((list_users !== "")&&(pasada===0))
                         {
+                            pasada=1;
                             for (var i = 0; i < list_users.length; i++)
                             {
                                 //   alert(String(sublist[i].split(",")[1]+"||"+sublist[i].split(",")[5]));
@@ -331,25 +350,35 @@
                 xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/empresabycif/" + cif, true);
                 xhttp.send();
                 xhttp.onreadystatechange = function ()
-                {
+                {  ////cif+","+nombre+","+direccion+","+provincia+","+poblacion+","+cp+","+tlf+","+comercial+","+fechaAlta+","+contacto
+                   //  0          1         2               3             4         5      6        7                8          9
                     var datos = xhttp.responseText;
                     //cif,nombre,poblacion,cp,telefono,pcontacto,scomercial,falta
-                    document.getElementById("cif").value = datos.split(",")[0];
-                    document.getElementById("nombrer").value = datos.split(",")[1];
-                    document.getElementById("poblacion").value = datos.split(",")[2];
-                    document.getElementById("cp").value = datos.split(",")[3];
-                    document.getElementById("telefono").value = datos.split(",")[4];
-                    document.getElementById("contacto").value = datos.split(",")[5];
-
-                    //document.getElementById("poblacion").value = datos.split(",")[6];
-                    var fechahora = datos.split(",")[7];
-                    var fecha = "";
-                    if (typeof (fechahora) !== "undefined")
+                    document.getElementById("cif").value=datos.split(",")[0];
+                    document.getElementById("nombrer").value=datos.split(",")[1];
+                    document.getElementById("direccion").value=datos.split(",")[2];
+                    document.getElementById("provincia").value=datos.split(",")[3];
+                    document.getElementById("poblacion").value=datos.split(",")[4];
+                    document.getElementById("cp").value=datos.split(",")[5];
+                    document.getElementById("tlf").value=datos.split(",")[6];
+                    //** select
+                    var select=document.getElementById("comercial");
+                   
+                    cargar_personas_select();
+                    //document.getElementById("comercial").value=datos.split(",")[7]; 
+                    document.getElementById("comercial").selectedIndex=Number(datos.split(",")[7]);
+                    
+                    
+                    var fecha;
+                    if(typeof(datos.split(",")[8])!=="undefined")
                     {
-                        fecha = fechahora.split(" ")[0];
+                        fecha=document.getElementById("falta").value=datos.split(",")[8].split(" ")[0]; 
                     }
-                    document.getElementById("falta").value = fecha;
+                    
+                    document.getElementById("contacto").value=datos.split(",")[9];
 
+                   
+                  
 
 
                     /*

@@ -55,16 +55,32 @@ public class Empresas  implements java.io.Serializable {
     }
 
 	
-    public Empresas(String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta) {
-        this.nombre = nombre;
-        this.direccion = direccion;
-        this.provincia = provincia;
-        this.poblacion = poblacion;
-        this.cp = cp;
-        this.tlf = tlf;
-        this.comercial = comercial;
-        this.fechaAlta = fechaAlta;
+//    public Empresas(String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta) {
+//        this.nombre = nombre;
+//        this.direccion = direccion;
+//        this.provincia = provincia;
+//        this.poblacion = poblacion;
+//        this.cp = cp;
+//        this.tlf = tlf;
+//        this.comercial = comercial;
+//        this.fechaAlta = fechaAlta;
+//    }
+    
+    public Empresas(String cif, String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta, String contacto) {
+       this.cif = cif;
+       this.nombre = nombre;
+       this.direccion = direccion;
+       this.provincia = provincia;
+       this.poblacion = poblacion;
+       this.cp = cp;
+       this.tlf = tlf;
+       this.comercial = comercial;
+       this.fechaAlta = fechaAlta;
+       this.contacto = contacto;
+        this.visitases =null;
+    
     }
+    
     public Empresas(String cif, String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta, String contacto, Set visitases) {
        this.cif = cif;
        this.nombre = nombre;

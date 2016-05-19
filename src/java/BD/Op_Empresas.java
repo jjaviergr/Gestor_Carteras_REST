@@ -17,20 +17,26 @@ import org.hibernate.criterion.Restrictions;
 // */
 public class Op_Empresas {
 
-    public static void add(Empresas e) {
+    public static void add(Empresas e) throws Exception {
         SessionFactory sfactory = HibernateUtil.getSessionFactory();
         Session session = sfactory.openSession();
         Transaction tx = null;
-        try {
+        try 
+        {
             tx = session.beginTransaction();
             session.save(e);
             tx.commit();
-        } catch (HibernateException ex) {
-            if (tx != null) {
+        } 
+        catch (HibernateException ex) 
+        {
+            if (tx != null) 
+            {
                 tx.rollback();
             }
-            ex.printStackTrace();
-        } finally {
+            System.err.printf("Excepcion en Op_Empresa.add "+ex);
+        } 
+        finally 
+        {
             session.close();
         }
     }
