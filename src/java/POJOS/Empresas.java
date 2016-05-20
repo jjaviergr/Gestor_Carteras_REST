@@ -66,7 +66,7 @@ public class Empresas  implements java.io.Serializable {
 //        this.fechaAlta = fechaAlta;
 //    }
     
-    public Empresas(String cif, String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta, String contacto) {
+    public Empresas(String cif, String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, String contacto) {
        this.cif = cif;
        this.nombre = nombre;
        this.direccion = direccion;
@@ -75,7 +75,7 @@ public class Empresas  implements java.io.Serializable {
        this.cp = cp;
        this.tlf = tlf;
        this.comercial = comercial;
-       this.fechaAlta = fechaAlta;
+       this.fechaAlta = new Date();
        this.contacto = contacto;
         this.visitases =null;
     

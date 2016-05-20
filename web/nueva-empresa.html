@@ -109,7 +109,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="empresas.jsp">
+                                <a href="empresas.html">
                                     <span class="icono-32-cancelar"></span>
                                     Cancelar
                                 </a>                                
@@ -130,6 +130,7 @@
                      </div>
                      <% }%>*/
                 </script>
+                
                 <form id="altaempresa" method="POST" onsubmit="enviar_formulario();">
                     <table class="altaEmpresa">
                         <!-- //cif+","+nombre+","+direccion+","+provincia+","+poblacion+","+cp+","+tlf+","+comercial+","+fechaAlta+","+contacto
@@ -198,9 +199,10 @@
         <script>
             function enviar_formulario()
             {//cif+","+nombre+","+direccion+","+provincia+","+poblacion+","+cp+","+tlf+","+comercial+","+fechaAlta+","+contacto
-                alert("ENVIANDO");
+                //alert("ENVIANDO");
                 var respuesta;
                 var datos = [];
+                
                 datos.push(document.getElementById("cif").value);
                 //datos.push(",");
                 datos.push(document.getElementById("nombrer").value);
@@ -212,9 +214,14 @@
                 datos.push(document.getElementById("poblacion").value);
                 //datos.push(",");
                 datos.push(document.getElementById("cp").value);
+                
                 datos.push(document.getElementById("tlf").value);
-                datos.push(document.getElementById("comercial").value);
+                
+                alert(document.getElementById("comercial").selectedIndex);
+                datos.push(document.getElementById("comercial").selectedIndex);
+                
                 datos.push(document.getElementById("falta").value);
+                
                 datos.push(document.getElementById("contacto").value);
               
 
@@ -228,7 +235,7 @@
                 
                 if (action === "alta")
                 {
-                    alert(datos);
+                    //alert(datos);
                     xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/addempresa/" + datos.toString(), true);
                 }
 
@@ -237,7 +244,7 @@
                 xhttp.onreadystatechange = function ()
                 {
                     respuesta = xhttp.responseText;
-                    window.location.href = "http://localhost:8080/GestorCarteras_REST/usuarios.html";
+                    window.location.href = "http://localhost:8080/GestorCarteras_REST/empresas.html";
                 };
 
                 return respuesta;
@@ -255,7 +262,7 @@
                 xhttp.onreadystatechange = function ()
                 {
                     
-                }
+                };
                 xhttp.onload = function ()
                 {
                     respuesta = xhttp.responseText;
@@ -293,7 +300,7 @@
                         //alert(list_users.length);
                         //alert(sublist[2]);
                         list_users.shift();
-                        alert(list_users.length);
+                        //alert(list_users.length);
                         var option;
                       
                         if ((list_users !== "")&&(pasada===0))
@@ -318,8 +325,7 @@
                         }
                     }
                 }
-            }
-            ;
+            };
 
 
             function inicia_accion()
@@ -337,14 +343,10 @@
                     Cargar_datos(cif);
 
                 }
-
-            }
-            ;
+            };
 
             function Cargar_datos(cif)
             {
-
-
                 var xhttp = new XMLHttpRequest();
                 //alert("LOGINN"+login);
                 xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/empresabycif/" + cif, true);
@@ -362,12 +364,10 @@
                     document.getElementById("cp").value=datos.split(",")[5];
                     document.getElementById("tlf").value=datos.split(",")[6];
                     //** select
-                    var select=document.getElementById("comercial");
+                    document.getElementById("comercial");
                    
                     cargar_personas_select();
-                    //document.getElementById("comercial").value=datos.split(",")[7]; 
-                    document.getElementById("comercial").selectedIndex=Number(datos.split(",")[7]);
-                    
+                    document.getElementById("comercial").IndexSelected=Number(datos.split(",")[7]); 
                     
                     var fecha;
                     if(typeof(datos.split(",")[8])!=="undefined")
@@ -376,172 +376,10 @@
                     }
                     
                     document.getElementById("contacto").value=datos.split(",")[9];
-
-                   
-                  
-
-
-                    /*
-                     var select=document.getElementById("select_si_adm");
-                     //alert(datos.split(",")[6]);
-                     if (datos.split(",")[6] === "true")
-                     {
-                     select.selectedIndex=0;
-                     } 
-                     else
-                     {
-                     select.selectedIndex=1;
-                     }
-                     */
                 };
-            }
-            ;
-            /*
-             * value="<%
-             SimpleDateFormat fecha = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-             out.print(fecha.format(new Date()));
-             %>"
-             * 
-             * 
-             <%
-             int i=0;
-             List lista=Op_Usuarios.list();
-             ListIterator iter = lista.listIterator(lista.size());
-             while (iter.hasPrevious())                                        
-             {
-             Usuarios u=(Usuarios)lista.get(i);
+            };
              
-             iter.previous();
-             i++;
-             %>
-             <option value="<%=u.getId()%>">
-             <%=u.getApellidos()+" "%>
-             <%=u.getNombre()%>
-             
-             </option>
-             <%
-             }
-             %>
-             
-             * 
-             * <table class="altaEmpresa">
-             <tr>
-             <td width="130"><label>C.I.F.:</label></td>
-             <td><input type="text" name="cif" value="<%=inicializa ? e.getCif() : ""%>" /></td>
-             </tr>
-             <tr>
-             <td><label>Nombre:</label></td>
-             <td><input type="text" name="nombre" value="<%=inicializa ? e.getNombre() : ""%>" /></td>
-             </tr>
-             <tr>
-             <td><label>Direccion:</label></td>
-             <td><input type="text" name="direccion" value="<%=inicializa ? e.getDireccion() : ""%>"/></td>
-             </tr>
-             <tr>
-             <td><label>Provincia:</label></td>
-             <td><input type="text" name="provincia" value="<%=inicializa ? e.getProvincia() : ""%>"/></td>
-             </tr>
-             <tr>
-             <td><label>Población:</label></td>
-             <td><input type="text" name="poblacion" value="<%=inicializa ? e.getPoblacion() : ""%>"/></td>
-             </tr>
-             <tr>
-             <td><label>Cod.Postal:</label></td>
-             <td><input type="text" name="cp" value="<%=inicializa ? e.getCp() : ""%>"/></td>
-             </tr>
-             <tr>
-             <td><label>Telefono:</label></td>
-             <td><input type="text" name="tlf" value="<%=inicializa ? e.getTlf() : ""%>"/></td>
-             </tr>
-             <tr>
-             <td><label>Per.Contacto:</label></td>
-             <td><input type="text" name="contacto" value="<%=inicializa ? e.getContacto() : ""%>"/></td>
-             </tr>
-             <tr>
-             <td><label>Comercial :</label></td>
-             <td>
-             <select name="comercial">
-             <option value="-1">----Seleccione Comercial------</option>
-             
-             <%
-             int i=0;
-             List lista=Op_Usuarios.list();
-             ListIterator iter = lista.listIterator(lista.size());
-             while (iter.hasPrevious())                                        
-             {
-             Usuarios u=(Usuarios)lista.get(i);
-             
-             iter.previous();
-             i++;
-             %>
-             <option value="<%=u.getId()%>">
-             <%=u.getApellidos()+" "%>
-             <%=u.getNombre()%>
-             
-             </option>
-             <%
-             }
-             %>
-             
-             </select>
-             </td>
-             </tr>
-             <tr>
-             <td><label>Fecha Alta:</label></td>
-             <td><input type="text" name="falta" readonly="readonly" 
-             value="<%
-             SimpleDateFormat fecha = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-             out.print(fecha.format(new Date()));
-             %>"/>
-             
-             </td>
-             </tr>                                                            
-             </table>
-             * 
-             *            <% if (e != null && e.getId() != -1) {%>
-             <input type="hidden" name="id" value="<%=e.getId()%>" />
-             <% }%>
-             
-             * 
-             *  form action="<% if (!inicializa)out.print("acciones/altaempresa.action.jsp"); 
-             else out.print("acciones/editarempresa.action.jsp");
-             %>">
-             <%
-             Empresas e = null;
-             boolean inicializa = false;
-             boolean error=false;
-             String mensaje_Error="";
-             String id_empresa=request.getParameter("update");    
-             
-             if (id_empresa!=null)
-             {          
-             try
-             {
-             inicializa=true;
-             int id=Integer.parseInt(id_empresa);
-             e=Op_Empresas.find(id);
-             }
-             catch(Exception ex)
-             {
-             inicializa=false;
-             error=true;
-             mensaje_Error=ex.getMessage().toString();
-             
-             }
-             }
-             
-             
-             
-             //int edit_id = -1;
-             
-             
-             //inicializa = true;
-             
-             //e = (Empresas) session.getAttribute("empresa");
-             
-             
-             
-             %>*/
+          
         </script>
     </body>
 </html>

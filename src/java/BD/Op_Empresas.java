@@ -131,24 +131,43 @@ public class Op_Empresas {
         }
     }
     
-    public static void update( POJOS.Empresas e)
+    public static int update( int id,POJOS.Empresas e) 
     {
-           
+        Session session=null;
+       try
+       { 
         SessionFactory sfactory = HibernateUtil.getSessionFactory();
-        Session session = sfactory.openSession();
+        session = sfactory.openSession();
         Transaction tx = session.beginTransaction();
 
-        POJOS.Empresas old_Empresa = null;
+        POJOS.Empresas old_user = (POJOS.Empresas) session.load(POJOS.Empresas.class, id);
 
-        old_Empresa = (POJOS.Empresas) session.load(POJOS.Empresas.class, e.getId());
-
-        e.setId(old_Empresa.getId());
+        e.setId(old_user.getId());
 
         session.update(e); // modifica el objeto
 
         tx.commit(); //confirma transacción (sincronización con base de datos)
 
-        session.close();
-    
+        
+        return 1;
+       }
+       catch (Exception ex)
+       {
+           System.err.print("Excepcion en operacion update empresas en servicio "+ex);
+           return 0;
+       }
+       finally
+       {
+           try
+           {
+               session.close();
+           }
+           catch(Exception ex)
+           {
+               System.err.print("Excepcion en operacion update empresas en servicio al cerrar sesion "+ex);
+           }
+       }
+        
+       
     }
 }

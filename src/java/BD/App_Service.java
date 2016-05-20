@@ -50,10 +50,10 @@ public class App_Service {
          Empresas em=Op_Empresas.find(CIF);
          if (em!=null)
          {
-             int telefono=-1;
+            int telefono=-1;
             try
             {
-                telefono=Integer.parseInt(datos[7]);
+                telefono=Integer.parseInt(datos[6]);
             }
             catch(Exception e)
             {
@@ -62,7 +62,7 @@ public class App_Service {
             int comercial=-1;
             try
             {
-                Usuarios u=Op_Usuarios.find_by_login(datos[8]);
+                Usuarios u=Op_Usuarios.find_by_NIF(datos[7]);
                 if (u!=null)
                 {
                     comercial=u.getId();
@@ -73,21 +73,13 @@ public class App_Service {
                  System.err.print("Exception con el comercialen servicio UpdateEmpresa  "+e);
             }
             
-            
-            Date Dfecha=null;
-            SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");            
-            try 
-            {
-                Dfecha= fecha.parse(datos[9]);
-            } 
-            catch (ParseException ex) 
-            {
-                System.err.print("Exception con la fecha en servicio UpdateEmpresa " + ex);
-            }
-            Empresas e=new Empresas(datos[0],datos[1],datos[2],datos[3],datos[4],datos[5],telefono,comercial,Dfecha,datos[7]);
+            Empresas e=new Empresas(datos[0],datos[1],datos[2],datos[3],datos[4],datos[5],telefono,comercial,datos[9]);
             e.setId(em.getId());
-            
-            Op_Empresas.update(e);
+            e.setFechaAlta(em.getFechaAlta());
+           
+          
+            Op_Empresas.update(e.getId(),e);
+          
             
             exito="ok";
          }
@@ -95,6 +87,17 @@ public class App_Service {
         return(exito);
             
     }
+    
+    @GET
+    @Path("/borrarempresabycif/{cif}")
+    public void borrarEmpresabyCIF(@PathParam("cif") String CIF)
+    {
+        Empresas e=Op_Empresas.find(CIF);
+        int id=e.getId();
+        if (id!=-1)
+           Op_Empresas.delete(id);
+    }
+    
     
     @GET
     @Path("/empresabycif/{cif}")
@@ -138,20 +141,11 @@ public class App_Service {
             }
             
             
-            Date Dfecha=null;
-            SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");            
-            try 
-            {
-                Dfecha= fecha.parse(datos[9]);
-            } 
-            catch (ParseException ex) 
-            {
-                System.err.print("Exception con la fecha en servicio AddEmpresa " + ex);
-            }                       //empresa//String cif, String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta, String contacto
-                                                    //0              1                 2               3                  4            5        6           8              9               7
-                                    //form   //cif,              nombre,           direccion,        prov,           poblacin,         cp,     tlf,     contacto,     comercial,   fechaAlta
-                                    //         0                   1                 2                 3                4               5       6          7              8           9                       
-            Empresas e=new Empresas(datos[0],datos[1],datos[2],datos[3],datos[4],datos[5],telefono,comercial,Dfecha,datos[7]);
+        //empresa//String cif, String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta, String contacto
+                            //0              1                 2               3                  4            5        6           8              9               7
+            //form   //cif,              nombre,           direccion,        prov,           poblacin,         cp,     tlf,     contacto,     comercial,   fechaAlta
+            //         0                   1                 2                 3                4               5       6          7              8           9                       
+            Empresas e=new Empresas(datos[0],datos[1],datos[2],datos[3],datos[4],datos[5],telefono,comercial,datos[7]);
             
             String mensaje="";
             try
@@ -168,11 +162,7 @@ public class App_Service {
             {
                 return mensaje;
             }
-            
-        
     }
-    
-    
     
     @GET
     @Path("/valida/{login},{pass}")

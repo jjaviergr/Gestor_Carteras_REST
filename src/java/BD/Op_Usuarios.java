@@ -77,6 +77,32 @@ public class Op_Usuarios {
         return (results);
     }
 
+    
+    public static Usuarios find_by_NIF(String nif)
+    {
+         Usuarios resultado = null;
+
+        SessionFactory sfactory = HibernateUtil.getSessionFactory();
+        Session session = sfactory.openSession();
+        try {
+            //Query query = session.createQuery(hql);
+            Criteria cs = session.createCriteria(Usuarios.class);
+            cs.add(Restrictions.eq("nif", nif));
+            List results = cs.list();
+            //tx.commit();
+            if (!results.isEmpty()) {
+
+                resultado = (Usuarios) results.get(0);
+            }
+
+        } catch (Exception e) {
+
+        } finally {
+            session.close();
+        }
+        return (resultado);
+    }
+    
     public static Usuarios find_by_login(String login) {
         Usuarios resultado = null;
 
