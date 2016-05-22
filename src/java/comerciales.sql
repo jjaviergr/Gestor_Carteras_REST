@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-05-2016 a las 20:48:37
+-- Tiempo de generación: 21-05-2016 a las 12:56:05
 -- Versión del servidor: 10.1.10-MariaDB
 -- Versión de PHP: 5.6.19
 
@@ -45,7 +45,7 @@ CREATE TABLE `empresas` (
 --
 
 INSERT INTO `empresas` (`id`, `cif`, `nombre`, `direccion`, `provincia`, `poblacion`, `cp`, `tlf`, `comercial`, `fecha_alta`, `contacto`) VALUES
-(1, '1231313131313Z', 'La Foca', 'Avd Mediterraneo', 'AlmerÃ­assss', 'AlmerÃ­a', '04000', 950000000, -1, '2016-04-05 00:00:00', 'Gomez');
+(3, '1212', '121', '12', '121', '12', '12', 1, -1, '2016-05-21 12:43:44', '1');
 
 -- --------------------------------------------------------
 
@@ -93,14 +93,6 @@ CREATE TABLE `visitas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
--- Volcado de datos para la tabla `visitas`
---
-
-INSERT INTO `visitas` (`usuarios_id`, `empresas_id`, `fecha`, `resultado`, `motivo`, `id`) VALUES
-(1, 1, '2016-04-16 00:00:00.000000', 'Satisfactorio', 'Consulta de satisfacción', 1),
-(1, 1, '2016-04-27 00:00:00.000000', 'pruebas', 'pruebas', 2);
-
---
 -- Índices para tablas volcadas
 --
 
@@ -139,7 +131,7 @@ ALTER TABLE `visitas`
 -- AUTO_INCREMENT de la tabla `empresas`
 --
 ALTER TABLE `empresas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
@@ -158,8 +150,8 @@ ALTER TABLE `visitas`
 -- Filtros para la tabla `visitas`
 --
 ALTER TABLE `visitas`
-  ADD CONSTRAINT `fk_usuarios_has_empresas_empresas1` FOREIGN KEY (`empresas_id`) REFERENCES `empresas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_usuarios_has_empresas_usuarios` FOREIGN KEY (`usuarios_id`) REFERENCES `usuarios` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_usuarios_has_empresas_empresas1` FOREIGN KEY (`empresas_id`) REFERENCES `empresas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_usuarios_has_empresas_usuarios` FOREIGN KEY (`usuarios_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

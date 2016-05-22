@@ -62,7 +62,7 @@ public class App_Service {
             int comercial=-1;
             try
             {
-                Usuarios u=Op_Usuarios.find_by_NIF(datos[7]);
+                Usuarios u=Op_Usuarios.find_by_id(Integer.parseInt(datos[7]));
                 if (u!=null)
                 {
                     comercial=u.getId();
@@ -114,9 +114,7 @@ public class App_Service {
     public String AddEmpresa(@PathParam("paquete") String paquete)
     {
             String[] datos=paquete.split(",");
-        
-        //String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta
-         //                                                                                     5       6               7
+                
             int telefono=-1;
             try
             {
@@ -126,26 +124,15 @@ public class App_Service {
             {
                   System.err.print("Exception con el telefono en servicio AddEmpresa " + e);
             }
-            int comercial=-1;
-            try
+            int id=-1;
+            try{
+            id=Integer.parseInt(datos[7]);}
+            catch (Exception e)
             {
-                Usuarios u=Op_Usuarios.find_by_login(datos[8]);
-                if (u!=null)
-                {
-                    comercial=u.getId();
-                }
+                System.err.print("Exception con id del comercial " + e);
             }
-            catch(Exception e)
-            {
-                 System.err.print("Exception con el comercialen servicio AddEmpresa  "+e);
-            }
-            
-            
-        //empresa//String cif, String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta, String contacto
-                            //0              1                 2               3                  4            5        6           8              9               7
-            //form   //cif,              nombre,           direccion,        prov,           poblacin,         cp,     tlf,     contacto,     comercial,   fechaAlta
-            //         0                   1                 2                 3                4               5       6          7              8           9                       
-            Empresas e=new Empresas(datos[0],datos[1],datos[2],datos[3],datos[4],datos[5],telefono,comercial,datos[7]);
+                     
+            Empresas e=new Empresas(datos[0],datos[1],datos[2],datos[3],datos[4],datos[5],telefono,id,datos[9]);
             
             String mensaje="";
             try

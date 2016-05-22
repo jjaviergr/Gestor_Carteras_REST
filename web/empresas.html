@@ -32,12 +32,12 @@
             
             function Confirmar() 
             {
-                alert(document.getElementById("cif"));
-                if (document.getElementById("cif")!==null)
+                //alert(document.getElementById("CIF").innerHTML);
+                if (document.getElementById("CIF").innerHTML!==null)
                 {
-                var cif=document.getElementById("cif").value;
-                if(confirm('¿Estas seguro que deseas borrar la empresa?'))
-                    borrar(cif);
+                    var cif=document.getElementById("CIF").innerHTML;
+                    if(confirm('¿Estas seguro que deseas borrar la empresa?'))
+                        borrar(cif);
                 }
             };
             
@@ -180,7 +180,7 @@
             function buscarEmpresa()
             {
                 var cif=document.getElementById("cif").value;
-                alert("CIF"+cif);
+                //alert("CIF"+cif);
                 var empresa=recupera_empresa(cif);
                 window.location.href = "http://localhost:8080/GestorCarteras_REST/verEmpresa.html/"+empresa;
             }
@@ -211,7 +211,7 @@
 
                 xhttp.onload = function ()
                 {
-                    alert("cargando");
+                    //alert("cargando");
                     var aux = [];
                     var r = respuesta.split("<list xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xs:string\">");
                     r.shift();
@@ -242,7 +242,7 @@
                     list_empresas.shift();
                     //alert(typeof(subempresas[j])!=='undefined');
                     //
-                    alert(list_empresas.length);
+                    //alert(list_empresas.length);
                     //
                     ////alert("LIST_E"+list_empresas[0]);
                     ////alert(list_empresas.length);
@@ -261,7 +261,14 @@
                         //alert(sublist.length);
                         subempresas = sublist;
                         //alert(subempresas);
-                        for (var j = 0; j < 7; j++)
+                        td = document.createElement("TD");
+                                                     
+                        element = document.createTextNode(subempresas[0]);
+                        td.style = "text-align: center";
+                        td.textContent = subempresas[0];
+                        td.id="CIF";
+                        tr.appendChild(td);
+                        for (var j = 1; j < 7; j++)
                         {
                             
                             td = document.createElement("TD");

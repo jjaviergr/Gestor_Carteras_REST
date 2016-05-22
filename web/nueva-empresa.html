@@ -217,8 +217,11 @@
                 
                 datos.push(document.getElementById("tlf").value);
                 
-                alert(document.getElementById("comercial").selectedIndex);
-                datos.push(document.getElementById("comercial").selectedIndex);
+                //alert(document.getElementById("comercial").selectedIndex);
+                var indice=document.getElementById("comercial").selectedIndex;
+                var lista_option=document.getElementById("comercial").getElementsByTagName("OPTION");
+                //alert("SELECT"+lista_option[indice].value);
+                datos.push(lista_option[indice].value);
                 
                 datos.push(document.getElementById("falta").value);
                 
