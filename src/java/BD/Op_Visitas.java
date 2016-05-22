@@ -1,17 +1,20 @@
 package BD;
 
+import POJOS.Empresas;
 import POJOS.Usuarios;
 import POJOS.Visitas;
 import es.cartera.HibernateUtil;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.engine.spi.SessionImplementor;
 
 /**
  *
@@ -19,6 +22,39 @@ import org.hibernate.criterion.Restrictions;
  */
 public class Op_Visitas {
 
+    @XmlElement
+    public static List<Visitas> list() {
+        List<Visitas> resultsA = null;
+        List<Visitas> results = null;
+        
+        SessionFactory sfactory = HibernateUtil.getSessionFactory();
+        Session session = sfactory.openSession();
+        try {
+            String hql = "from Visitas";
+            Query query = session.createQuery(hql);
+           
+            resultsA = query.list();
+          
+//            Empresas e = (Empresas) ((SessionImplementor)session).getPersistenceContext().unproxy(resultsA.get(0).getEmpresas());
+//            Object u = ((SessionImplementor)session).getPersistenceContext().unproxy(resultsA.get(0).getUsuarios());
+            
+            ArrayList datos=new ArrayList();
+            datos.add(resultsA.get(0).getId());
+            datos.add(resultsA.get(0).getEmpresas().toString());
+            datos.add(resultsA.get(0).getUsuarios().toString());
+            datos.add(resultsA.get(0).getMotivo());
+            datos.add(resultsA.get(0).getResultado());
+            datos.add(resultsA.get(0).getFecha());
+            results=datos;
+
+        } catch (Exception e) {
+              System.err.print(e.toString());
+        } finally {
+            session.close();
+        }
+        return (results);
+    }
+    
     public static void add(POJOS.Visitas u) {
         SessionFactory sfactory = HibernateUtil.getSessionFactory();
         Session session = sfactory.openSession();

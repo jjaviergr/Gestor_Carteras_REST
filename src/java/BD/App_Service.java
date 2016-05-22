@@ -21,10 +21,8 @@ import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -218,8 +216,32 @@ public class App_Service {
     }
     
     @GET
-    @Path("/listusers/{pos_act},{n_users}")
+    @Path("/listvisitas/{pos_act},{n_visitas}")
     @Produces(MediaType.APPLICATION_XML)
+    public ResposeList ListVisitas(@PathParam("pos_act") int pos_act, @PathParam("n_visitas") int n_visitas){
+    ResposeList rlist = null;
+        try {
+            List lista = BD.Op_Visitas.list();
+            rlist = new ResposeList();
+
+            List sublist = new ArrayList();
+            int limite = -1;
+            if (n_visitas > lista.size()) {
+                limite = lista.size();
+            } else {
+                limite = n_visitas;
+            }
+            for (int i = pos_act; i < limite; i++) {
+                sublist.add(lista.get(i));
+            }
+            rlist.setList(sublist);
+        } catch (Exception e) {
+            System.err.print(e.getMessage());
+        }
+        return rlist;
+    }
+    
+    
     public ResposeList ListUsers(@PathParam("pos_act") int pos_act, @PathParam("n_users") int n_users) {
         ResposeList rlist = null;
         try {

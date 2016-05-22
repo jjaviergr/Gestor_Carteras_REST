@@ -38,7 +38,7 @@
         <property name="contacto" type="string">
             <column name="contacto" length="50" />
         </property>
-        <set name="visitases" table="visitas" inverse="true" lazy="true" fetch="select">
+        <set name="visitases" table="visitas" inverse="true"  fetch="select">
             <key>
                 <column name="empresas_id" not-null="true" />
             </key>

@@ -21,19 +21,15 @@
                 $("#frmBuscar").dialog({autoOpen: false, modal: true, resizable: false});
             
                 $("#error4").dialog({show: "Scale", hide: "Flod", autoOpen: true, modal: true, width: 350, height: 'auto', resizable: false,
-                    buttons: {"Aceptar":
-                                function () {
-                                    $(this).dialog('close');
-                                }
-                    }
-                });            
-            });
-            function Confirmar() {
+                    buttons: {"Aceptar":function () { $(this).dialog('close');}}});      });
+            
+            function Confirmar() 
+            {
                 return confirm('¿Estas seguro que deseas borrar la visita?');
             }
         </script>
     </head>
-    <body>
+    <body onload="cargar_visitas(0,10);">
         <div id="pagina">
             <div id="header" ></div>
             
@@ -81,11 +77,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                       
-
-                        
-                        
-                        %>
+                     
                     </tbody>
                     <tfoot>
                         <tr>
@@ -132,14 +124,14 @@
             </form>
         </div>
         
-    
+    <!--
         <div id="error4" title="Error al buscar">
             <p class="ui-state-error ui-corner-all" 
                style="padding: 0.7em; font-size: 1.1em; text-align: center">
                 No existe ninguna empresa con el C.I.F. facilitado
             </p>    
         </div>
-        
+    -->
         
         
 <script>
@@ -214,7 +206,7 @@
                         td.textContent = subvisitas[0];
                         td.id="CIF";
                         tr.appendChild(td);
-                        for (var j = 1; j < 7; j++)
+                        for (var j = 1; j < subvisitas[j].length; j++)
                         {
                             
                             td = document.createElement("TD");
@@ -226,22 +218,7 @@
                             tr.appendChild(td);
                         }
                         
-                        td = document.createElement("TD");                       
-                        element = document.createTextNode(recupera_usuario(subvisitas[7]));
-                        td.style = "text-align: center";
-                        td.textContent = subvisitas[7];
-
-                        tr.appendChild(td);
                         
-                        for (var j = 8; j < subvisitas.length; j++)
-                        {
-                            td = document.createElement("TD");
-                            element = document.createTextNode(subvisitas[j]);
-                            td.style = "text-align: center";
-                            td.textContent = subvisitas[j];
-
-                            tr.appendChild(td);
-                        }
                         
                         /*
                           td = document.createElement("TD");
