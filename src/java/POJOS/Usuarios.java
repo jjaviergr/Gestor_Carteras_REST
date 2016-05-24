@@ -3,8 +3,11 @@ package POJOS;
 
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,10 +36,45 @@ private static final long serialVersionUID = 1L;
     {
     }
 
+    public Usuarios(List<String> sublista) {
+        this.id=Integer.parseInt(sublista.get(0));
+        this.login = sublista.get(1);
+        this.nombre = sublista.get(2);
+        this.apellidos = sublista.get(3);
+        SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");
+        Date f = null;
+        try 
+        {
+            f = fecha.parse(sublista.get(4));
+        } 
+        catch (ParseException ex) 
+        {
+            System.err.print("exception con la fecha en contructor empresa " + ex);
+        }
+        
+        
+        this.fu=f;
+         f = null;
+        try 
+        {
+            f = fecha.parse(sublista.get(8));
+        } 
+        catch (ParseException ex) 
+        {
+            System.err.print("exception con la fecha en contructor empresa " + ex);
+        }
+        
+        this.fnac = f;
+        
+        this.pass = sublista.get(5);
+        this.nif = sublista.get(6);
+        this.esAdm = Boolean.parseBoolean(sublista.get(7));
+    }
+
     @Override
     public String toString() 
     {
-        String cadena=login+","+nombre+","+apellidos+","+fnac+","+pass+","+nif+","+esAdm;
+        String cadena=id+","+login+","+nombre+","+apellidos+","+fnac+","+pass+","+nif+","+esAdm;
         
         return cadena;
     }

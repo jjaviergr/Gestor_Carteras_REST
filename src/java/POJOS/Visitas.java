@@ -30,10 +30,21 @@ public class Visitas  implements java.io.Serializable {
         this.usuarios = usuarios;
         this.fecha = fecha;
     }
-    public Visitas(Empresas empresas, Usuarios usuarios, Date fecha, String resultado, String motivo) {
-       this.empresas = empresas;
-       this.usuarios = usuarios;
-       this.fecha = fecha;
+    
+    /**
+     *
+     * @param e
+     * @param u
+     * @param motivo
+     * @param f
+     * @param resultado
+     * @param motivo
+     */
+    public Visitas(Integer id_,Empresas e, Usuarios u, String motivo, Date f, String resultado) {
+        this.id=id_;
+        this.empresas = e;
+       this.usuarios = u;
+       this.fecha = f;
        this.resultado = resultado;
        this.motivo = motivo;
     }

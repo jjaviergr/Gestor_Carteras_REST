@@ -4,6 +4,8 @@ import POJOS.Empresas;
 import POJOS.Usuarios;
 import POJOS.Visitas;
 import es.cartera.HibernateUtil;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,36 +27,82 @@ public class Op_Visitas {
     @XmlElement
     public static List<Visitas> list() {
         List<Visitas> resultsA = null;
-        List<Visitas> results = null;
-        
+        List<Visitas> results = new ArrayList();
+
         SessionFactory sfactory = HibernateUtil.getSessionFactory();
         Session session = sfactory.openSession();
         try {
             String hql = "from Visitas";
             Query query = session.createQuery(hql);
-           
+
             resultsA = query.list();
-          
+
 //            Empresas e = (Empresas) ((SessionImplementor)session).getPersistenceContext().unproxy(resultsA.get(0).getEmpresas());
 //            Object u = ((SessionImplementor)session).getPersistenceContext().unproxy(resultsA.get(0).getUsuarios());
-            
-            ArrayList datos=new ArrayList();
-            datos.add(resultsA.get(0).getId());
-            datos.add(resultsA.get(0).getEmpresas().toString());
-            datos.add(resultsA.get(0).getUsuarios().toString());
-            datos.add(resultsA.get(0).getMotivo());
-            datos.add(resultsA.get(0).getResultado());
-            datos.add(resultsA.get(0).getFecha());
-            results=datos;
+            List<String> lista_cadenas = new ArrayList();
+            Visitas v;
 
+            for (int i = 0; i < resultsA.size(); i++) {
+                lista_cadenas.add(resultsA.get(i).toString());
+            }
+
+            ////////////////////////
+            Integer id;
+            Empresas e;
+            Usuarios u;
+            Date f;
+            String resultado;
+            String motivo;
+            List<Visitas> lista_visitas = new ArrayList();
+            for (int j=0;j<lista_cadenas.size();j++) {
+
+                String[] elemento = lista_cadenas.get(j).split(",");//(1, 9);
+                id = Integer.parseInt(elemento[0]);//1 de visita //9 son emprresa // 8 son de usuario // 2 son de visita //total 20
+                List<String> lempresa = new ArrayList();
+                for (int i = 1; i < 12; i++) {
+                    lempresa.add(elemento[i]);
+                }
+                e = new Empresas(lempresa);
+                List<String> lusuarios = new ArrayList();
+                for (int i = 12; i < 21; i++) {
+                    lusuarios.add(elemento[i]);
+                }
+                u = new Usuarios(lusuarios);
+         
+                SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");
+                try 
+                {
+                    f = fecha.parse(elemento[20]);
+                } 
+                catch (ParseException ex) 
+                {
+                    System.err.print("exception con la fecha en contructor empresa " + ex);
+                    f=null;
+                }
+                
+
+                resultado = elemento[21];
+                motivo = elemento[22];
+
+                v = new Visitas(id, e, u, motivo, f, resultado);
+                lista_visitas.add(v);
+            }
+            results=lista_visitas;
+            //////////////////
+
+            //System.err.print("pruebas :" + lista_visitas);
+//Empresas empresas, Usuarios usuarios, Date fecha, String resultado, String motivo
+//                v=new Visitas(id,e,u,motivo,f,resultado);
+
+            //results.add(v);
         } catch (Exception e) {
-              System.err.print(e.toString());
+            System.err.print(e.toString());
         } finally {
             session.close();
         }
         return (results);
     }
-    
+
     public static void add(POJOS.Visitas u) {
         SessionFactory sfactory = HibernateUtil.getSessionFactory();
         Session session = sfactory.openSession();
@@ -85,15 +133,22 @@ public class Op_Visitas {
         return (results);
     }
 
-    public static List find(int user_id) {
+    public static List find_by_nombre_empresa(String  nombre_empresa) {
         List results = null;
+         Empresas em=Op_Empresas.find_by_name(nombre_empresa);
+         Integer id=em.getId();
         SessionFactory sfactory = HibernateUtil.getSessionFactory();
         Session session = sfactory.openSession();
         try {
-            //Query query = session.createQuery(hql);
-            Criteria cs = session.createCriteria(Visitas.class);
-            cs.add(Restrictions.eq("id", user_id));
+           
             
+            //Query query = session.createQuery(hql);
+            
+            Criteria cs = session.createCriteria(Visitas.class);
+            cs.add(Restrictions.eq("empresas", em.getId()));
+            
+          
+
             results = cs.list();
             //tx.commit();
 

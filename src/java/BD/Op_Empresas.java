@@ -60,6 +60,32 @@ public class Op_Empresas {
         return (resultado);
     }
 
+    public static Empresas find_by_name(String name)
+    {
+        Empresas resultado = null;
+
+        SessionFactory sfactory = HibernateUtil.getSessionFactory();
+        Session session = sfactory.openSession();
+        try {
+            //Query query = session.createQuery(hql);
+            Criteria cs = session.createCriteria(Empresas.class);
+            cs.add(Restrictions.eq("nombre", name));
+            List results = cs.list();
+            //tx.commit();
+            if (!results.isEmpty()) {
+
+                resultado = (Empresas) results.get(0);
+            }
+
+        } catch (Exception e) {
+
+        } finally {
+            session.close();
+        }
+
+        return resultado;
+    }
+    
     public static Empresas find(String cif) {
         Empresas resultado = null;
 

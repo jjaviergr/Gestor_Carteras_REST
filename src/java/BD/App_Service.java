@@ -11,6 +11,7 @@ package BD;
  */
 import POJOS.Empresas;
 import POJOS.Usuarios;
+import POJOS.Visitas;
 import es.cartera.Md5;
 import java.io.IOException;
 import java.text.ParseException;
@@ -241,7 +242,9 @@ public class App_Service {
         return rlist;
     }
     
-    
+    @GET
+    @Path("/listusers/{pos_act},{n_users}")
+    @Produces(MediaType.APPLICATION_XML)
     public ResposeList ListUsers(@PathParam("pos_act") int pos_act, @PathParam("n_users") int n_users) {
         ResposeList rlist = null;
         try {
@@ -325,6 +328,9 @@ public class App_Service {
         }
     }
     
+    
+    
+    
     @GET
     @Path("/wusers")
     @Produces({"application/xml"})
@@ -334,10 +340,27 @@ public class App_Service {
         rlist.setList(lista);
         return rlist;
     }
+    
+    @GET
+    @Path("/find_visita_by_nombre_empresa/{nombre}")
+    @Produces(MediaType.TEXT_HTML)
+    public Response find_visita_by_nombre_empresa(@PathParam("nombre") String nombre)
+    {
+        List<Visitas> v=new ArrayList<Visitas>();
+        if (nombre.compareTo("") != 0) 
+        {
+            v = Op_Visitas.find_by_nombre_empresa(nombre);
+            if ((nombre != null)&&(v!=null)) {
+                return Response.status(200).entity(v.toString()).build();
+            }
+        }
+        String error = "No existe";
+        return Response.status(200).entity(error).build();
+    }
 
     @GET
     @Path("/userlogin/{login}")
-    @Produces(MediaType.TEXT_HTML)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response getUSerbyId(@PathParam("login") String login) {
         if (login.compareTo("") != 0) {
             Usuarios emp = Op_Usuarios.find_by_login(login);
