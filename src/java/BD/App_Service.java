@@ -241,7 +241,9 @@ public class App_Service {
         return rlist;
     }
     
-    
+    @GET
+    @Path("/listusers/{pos_act},{n_users}")
+    @Produces(MediaType.APPLICATION_XML)
     public ResposeList ListUsers(@PathParam("pos_act") int pos_act, @PathParam("n_users") int n_users) {
         ResposeList rlist = null;
         try {
