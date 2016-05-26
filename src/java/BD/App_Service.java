@@ -353,7 +353,7 @@ public class App_Service {
 
      @GET
     @Path("/find_visita_by_id/{id}")
-    @Produces(MediaType.TEXT_HTML)
+    @Produces(MediaType.TEXT_XML)
     public Response find_visita_by_id(@PathParam("id") String id) {
         List<Visitas> v = new ArrayList<Visitas>();
         if (id.compareTo("") != 0) {

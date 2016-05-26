@@ -51,8 +51,7 @@ private static final long serialVersionUID = 1L;
         {
             System.err.print("exception con la fecha en contructor empresa " + ex);
         }
-        
-        
+                
         this.fu=f;
          f = null;
         try 

@@ -162,30 +162,55 @@
             }
             ;
 
+            var bloqueo_edicion = 0;
             function inicializa_edicion()
             {
-                /**/
-                var id_visita = window.location.href.split("=")[1];
-
-                var respuesta;
-                var xhttp = new XMLHttpRequest();
-                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/find_visita_by_id/" + id_visita, true);
-                xhttp.send();
-
-                xhttp.onreadystatechange = function ()
+                if (bloqueo_edicion === 0)
                 {
-                    respuesta=xhttp.responseText;
-                    alert(respuesta);
-                    //respuesta=respuesta.split("<list xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xs:string\">");
-                };
-                /*
-                respuesta.shift();
-                for(var i=0;i<respuesta;i++)
-                {
-                    respuesta[i]=String(respuesta[i]).replace("</list>","");
+                    bloqueo_edicion = 1;
+                    var id_visita = window.location.href.split("=")[1];
+
+                    var respuesta;
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/find_visita_by_id/" + id_visita, true);
+                    xhttp.send();
+
+                    xhttp.onreadystatechange = function ()
+                    {
+                        respuesta = xhttp.responseText;
+                        //respuesta=respuesta.split("<list xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xs:string\">");
+                    };
+                    xhttp.onload = function ()
+                    {
+                        respuesta = respuesta.split("[")[1];
+                        respuesta = respuesta.split("]")[0];
+                        var id_visita = respuesta.split(',')[0];
+                        var id_empresa = respuesta.split(',')[2];
+                        var nombre_comercial = respuesta.split(',')[11];
+                        var motivo = respuesta.split(',')[20];
+                        var resultado = respuesta.split(',')[21];
+                        var fecha = respuesta.split(',')[19];
+
+                        document.getElementById("id_visita").value = id_visita;
+                        cargar_comerciales();
+                        cargar_empresas();
+                        document.getElementById("empresa").selectedIndex = id_empresa;
+                        document.getElementById("comercial").selectedIndex = nombre_comercial;
+                        document.getElementById("motivo").value = motivo;
+                        document.getElementById("resultado").value = resultado;
+                        document.getElementById("fecha").value = fecha;
+
+                        alert(respuesta);
+                    };
                 }
-                alert(respuesta);
-        */
+                /*
+                 respuesta.shift();
+                 for(var i=0;i<respuesta;i++)
+                 {
+                 respuesta[i]=String(respuesta[i]).replace("</list>","");
+                 }
+                 alert(respuesta);
+                 */
                 /*
                  var id_visita = aux.split(',')[0];
                  var nombre_empresa = aux.split(',')[1];
