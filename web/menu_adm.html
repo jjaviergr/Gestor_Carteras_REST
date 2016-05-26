@@ -76,7 +76,7 @@
                                 </a>                                
                             </li>
                             <li>
-                                <a href="grabar.html" onclick="lanza_intent_grabar();">
+                                <a  onclick="lanza_intent_grabar();">
                                     <span class="icono-32-perfil"></span>
                                     Grabar
                                 </a>   
@@ -129,11 +129,12 @@
 
             function lanza_intent_grabar()
             {
+                alert("lanzado");
                 document.addEventListener("deviceready", onDeviceReady, false);               
             } ;
 
             function onDeviceReady() {
-                var options = {enableHighAccuracy: false, timeout: 15000, maximumAge: 0};               
+                var options = {enableHighAccuracy: false, timeout: 60000, maximumAge: 0};               
                 navigator.geolocation.getCurrentPosition(geoWin, geoFail, options);
             } ;
             //watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
@@ -144,14 +145,16 @@
             {
                 var latitud = position.coords.latitude;
                 var longitud = position.coords.longitude;
-                var accuracy = position.coords.accuracy;
                 
-                alert("latitud :" + latitud + " longitud: " + longitud + " accuracy: " + accuracy);
+                var date=new Date();
+                alert("latitud :" + latitud + " longitud: " + longitud + " date: " + date);
                 //console.log("latitud :"+latitud+" longitud: "+longitud+" accuracy: "+accuracy);
 
             };   
 
-            function geoFail(error) {};
+            function geoFail(error) {
+                alert("error "+error);
+            };
 
             // navigator.geolocation.getCurrentPosition(success, error, options);
         </script>

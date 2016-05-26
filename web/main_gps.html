@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+
+        <meta name="format-detection" content="telephone=no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src  'self' 'unsafe-inline' *">
+        <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">-->
+
+        <meta name="msapplication-tap-highlight" content="no">
+       <!-- <link rel="stylesheet" type="text/css" href="css/index.css">-->
+        <title>Hello World</title>
+    </head>
+    <body>
+        <div class="app">
+            <h1>Apache Cordova</h1>
+
+
+        </div>
+
+        <!--<script type="text/javascript" src="cordova.js"></script>-->
+
+        <script>
+            // onSuccess Callback
+            // This method accepts a Position object, which contains the
+            // current GPS coordinates
+            //
+            document.addEventListener("deviceready", onDeviceReady, false);
+            var watchGeo = null;
+
+
+
+            function stopGeoWatch() {
+                alert("stopGeoWatch()");
+                navigator.geolocation.clearWatch(watchGeo);
+            }
+
+            function startGeoWatch() {
+                alert (navigator);
+                if (!navigator.geolocation) {
+                  alert("no disponible");
+                } else 
+                {
+                    //alert("disponible");
+                    var options = {enableHighAccuracy: false,timeout: 15000,maximumAge: 0 };
+                    //alert('HOLA navigator');
+                    navigator.geolocation.getCurrentPosition(geoWin, geoFail, options);
+                    //alert('adios navigator');
+                }
+            }
+
+
+// life cycle
+
+            function onPause() {
+                alert("onPause()");
+                stopGeoWatch();
+            }
+
+            function onResume() {
+                alert("onResume()");
+                startGeoWatch();
+            }
+            
+            function onDeviceReady() {
+                document.addEventListener("pause", onPause, false);
+                document.addEventListener("resume", onResume, false);
+                startGeoWatch();
+                /*
+                 console.log("Lanzando");
+                 watchGeo = navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
+                 console.log("Lanzado");*/
+
+
+            }
+            ;
+            //watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
+
+
+
+            function geoWin(position) {
+
+                alert('HOLA geowin');
+                var latitud = position.coords.latitude;
+                var longitud = position.coords.longitude;
+                var accuracy=position.coords.accuracy;
+                alert("latitud :"+latitud+" longitud: "+longitud+" accuracy: "+accuracy);
+                //console.log("latitud :"+latitud+" longitud: "+longitud+" accuracy: "+accuracy);
+                
+            };
+            
+            function geoFail(error) {
+
+                alert('ERROR(' + error.code + '): ' + error.message);
+            };
+
+            // navigator.geolocation.getCurrentPosition(success, error, options);
+
+///////////////////////////////////////
+
+
+        </script>
+
+    </body>
+</html>
