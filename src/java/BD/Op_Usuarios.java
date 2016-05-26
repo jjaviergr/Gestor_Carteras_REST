@@ -208,4 +208,28 @@ public class Op_Usuarios {
 
     }
 
+    public static Usuarios find_by_name(String dato) {
+          Usuarios resultado = null;
+
+        SessionFactory sfactory = HibernateUtil.getSessionFactory();
+        Session session = sfactory.openSession();
+        try {
+            //Query query = session.createQuery(hql);
+            Criteria cs = session.createCriteria(Usuarios.class);
+            cs.add(Restrictions.eq("nombre", dato));
+            List results = cs.list();
+            //tx.commit();
+            if (!results.isEmpty()) {
+
+                resultado = (Usuarios) results.get(0);
+            }
+
+        } catch (Exception e) {
+
+        } finally {
+            session.close();
+        }
+        return (resultado);
+    }
+
 }

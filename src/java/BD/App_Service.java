@@ -11,6 +11,7 @@ package BD;
  */
 import POJOS.Empresas;
 import POJOS.Usuarios;
+import POJOS.Visitas;
 import es.cartera.Md5;
 import java.io.IOException;
 import java.text.ParseException;
@@ -40,115 +41,134 @@ public class App_Service {
     @GET
     @Path("/updateEmpresa/{paquete}")
     @Produces(MediaType.TEXT_HTML)
-    public String Update_Empresa(@PathParam("paquete") String paquete)
-    {
-        String exito="fracaso";
-         String[] datos=paquete.split(",");
-         String CIF=paquete.split(",")[0];
-         Empresas em=Op_Empresas.find(CIF);
-         if (em!=null)
-         {
-            int telefono=-1;
-            try
-            {
-                telefono=Integer.parseInt(datos[6]);
+    public String Update_Empresa(@PathParam("paquete") String paquete) {
+        String exito = "fracaso";
+        String[] datos = paquete.split(",");
+        String CIF = paquete.split(",")[0];
+        Empresas em = Op_Empresas.find(CIF);
+        if (em != null) {
+            int telefono = -1;
+            try {
+                telefono = Integer.parseInt(datos[6]);
+            } catch (Exception e) {
+                System.err.print("Exception con el telefono en servicio Updatempresa " + e);
             }
-            catch(Exception e)
-            {
-                  System.err.print("Exception con el telefono en servicio Updatempresa " + e);
-            }
-            int comercial=-1;
-            try
-            {
-                Usuarios u=Op_Usuarios.find_by_id(Integer.parseInt(datos[7]));
-                if (u!=null)
-                {
-                    comercial=u.getId();
+            int comercial = -1;
+            try {
+                Usuarios u = Op_Usuarios.find_by_id(Integer.parseInt(datos[7]));
+                if (u != null) {
+                    comercial = u.getId();
                 }
+            } catch (Exception e) {
+                System.err.print("Exception con el comercialen servicio UpdateEmpresa  " + e);
             }
-            catch(Exception e)
-            {
-                 System.err.print("Exception con el comercialen servicio UpdateEmpresa  "+e);
-            }
-            
-            Empresas e=new Empresas(datos[0],datos[1],datos[2],datos[3],datos[4],datos[5],telefono,comercial,datos[9]);
+
+            Empresas e = new Empresas(datos[0], datos[1], datos[2], datos[3], datos[4], datos[5], telefono, comercial, datos[9]);
             e.setId(em.getId());
             e.setFechaAlta(em.getFechaAlta());
-           
-          
-            Op_Empresas.update(e.getId(),e);
-          
-            
-            exito="ok";
-         }
-        
-        return(exito);
-            
+
+            Op_Empresas.update(e.getId(), e);
+
+            exito = "ok";
+        }
+
+        return (exito);
+
     }
-    
+
     @GET
     @Path("/borrarempresabycif/{cif}")
-    public void borrarEmpresabyCIF(@PathParam("cif") String CIF)
-    {
-        Empresas e=Op_Empresas.find(CIF);
-        int id=e.getId();
-        if (id!=-1)
-           Op_Empresas.delete(id);
+    public void borrarEmpresabyCIF(@PathParam("cif") String CIF) {
+        Empresas e = Op_Empresas.find(CIF);
+        int id = e.getId();
+        if (id != -1) {
+            Op_Empresas.delete(id);
+        }
     }
-    
-    
+
     @GET
     @Path("/empresabycif/{cif}")
     @Produces(MediaType.TEXT_HTML)
-    public String EmpresaByCIF(@PathParam("cif") String CIF)
-    {
-        Empresas e=BD.Op_Empresas.find(CIF);
+    public String EmpresaByCIF(@PathParam("cif") String CIF) {
+        Empresas e = BD.Op_Empresas.find(CIF);
         return (e.toString());
     }
-    
+
+    @GET
+    @Path("/addvisita/{paquete}")
+    @Produces(MediaType.TEXT_HTML)
+    public String AddVisita(@PathParam("paquete") String paquete) {
+        String mensaje = "";
+        //Empresas e, Usuarios u, String motivo, Date f, String resultado
+        String[] datos = paquete.split(",");
+
+        Empresas e=BD.Op_Empresas.find_by_name(datos[0]);
+        Usuarios u=BD.Op_Usuarios.find_by_name(datos[1]);
+        
+        SimpleDateFormat sfecha = new SimpleDateFormat("yyyy-MM-dd");
+        Date fecha = null;
+        try 
+        {
+            fecha = sfecha.parse(datos[4]);
+        } 
+        catch (ParseException ex) 
+        {
+            System.err.print("exception con la fecha en contructor empresa " + ex);
+        }
+        String resultado=datos[2];
+        String motivo=datos[3];
+        
+        Visitas v = new Visitas(e,u,motivo,fecha,resultado);      
+        
+        try 
+        {
+            Op_Visitas.add(v);
+            mensaje = "ok";
+        } 
+        catch (Exception ex) 
+        {
+            mensaje = "problema al insertar Visita en Servicio " + ex;
+            System.err.print("problema al insertar Visita en Servicio " + ex);
+        } 
+        finally 
+        {
+            return mensaje;
+        }
+    }
+
     @GET
     @Path("/addempresa/{paquete}")
     @Produces(MediaType.TEXT_HTML)
-    public String AddEmpresa(@PathParam("paquete") String paquete)
-    {
-            String[] datos=paquete.split(",");
-                
-            int telefono=-1;
-            try
-            {
-                telefono=Integer.parseInt(datos[7]);
-            }
-            catch(Exception e)
-            {
-                  System.err.print("Exception con el telefono en servicio AddEmpresa " + e);
-            }
-            int id=-1;
-            try{
-            id=Integer.parseInt(datos[7]);}
-            catch (Exception e)
-            {
-                System.err.print("Exception con id del comercial " + e);
-            }
-                     
-            Empresas e=new Empresas(datos[0],datos[1],datos[2],datos[3],datos[4],datos[5],telefono,id,datos[9]);
-            
-            String mensaje="";
-            try
-            {
-                Op_Empresas.add(e);
-                mensaje="ok";
-            }
-            catch(Exception ex)
-            {
-                mensaje="problema al insertar empresa en servicio "+ex;
-                System.err.print("problema al insertar empresa en servicio "+ex);
-            }
-            finally
-            {
-                return mensaje;
-            }
+    public String AddEmpresa(@PathParam("paquete") String paquete) {
+        String[] datos = paquete.split(",");
+
+        int telefono = -1;
+        try {
+            telefono = Integer.parseInt(datos[7]);
+        } catch (Exception e) {
+            System.err.print("Exception con el telefono en servicio AddEmpresa " + e);
+        }
+        int id = -1;
+        try {
+            id = Integer.parseInt(datos[7]);
+        } catch (Exception e) {
+            System.err.print("Exception con id del comercial " + e);
+        }
+
+        Empresas e = new Empresas(datos[0], datos[1], datos[2], datos[3], datos[4], datos[5], telefono, id, datos[9]);
+
+        String mensaje = "";
+        try {
+            Op_Empresas.add(e);
+            mensaje = "ok";
+        } catch (Exception ex) {
+            mensaje = "problema al insertar empresa en servicio " + ex;
+            System.err.print("problema al insertar empresa en servicio " + ex);
+        } finally {
+            return mensaje;
+        }
     }
-    
+
     @GET
     @Path("/valida/{login},{pass}")
     @Produces(MediaType.TEXT_HTML)
@@ -201,25 +221,21 @@ public class App_Service {
     @Produces(MediaType.APPLICATION_XML)
     public ResposeList ListUsers() {
         ResposeList rlist = null;
-        try 
-        {
+        try {
             List lista = BD.Op_Usuarios.list();
             rlist = new ResposeList();
             rlist.setList(lista);
-        }
-
-        catch (Exception e) 
-        {
-           System.err.print("Excepcion en servicio con lista comerciles"+e.getMessage().toString());
+        } catch (Exception e) {
+            System.err.print("Excepcion en servicio con lista comerciles" + e.getMessage().toString());
         }
         return rlist;
     }
-    
+
     @GET
     @Path("/listvisitas/{pos_act},{n_visitas}")
     @Produces(MediaType.APPLICATION_XML)
-    public ResposeList ListVisitas(@PathParam("pos_act") int pos_act, @PathParam("n_visitas") int n_visitas){
-    ResposeList rlist = null;
+    public ResposeList ListVisitas(@PathParam("pos_act") int pos_act, @PathParam("n_visitas") int n_visitas) {
+        ResposeList rlist = null;
         try {
             List lista = BD.Op_Visitas.list();
             rlist = new ResposeList();
@@ -293,8 +309,6 @@ public class App_Service {
         return rlist;
     }
 
-    
-    
     @GET
     @Path("/numero_usuarios")
     @Produces(MediaType.APPLICATION_XML)
@@ -326,7 +340,7 @@ public class App_Service {
             return Integer.toString(numero);
         }
     }
-    
+
     @GET
     @Path("/wusers")
     @Produces({"application/xml"})
@@ -337,9 +351,39 @@ public class App_Service {
         return rlist;
     }
 
+     @GET
+    @Path("/find_visita_by_id/{id}")
+    @Produces(MediaType.TEXT_XML)
+    public Response find_visita_by_id(@PathParam("id") String id) {
+        List<Visitas> v = new ArrayList<Visitas>();
+        if (id.compareTo("") != 0) {
+            v.add(Op_Visitas.find_by_id(id));
+            if ((id != null) && (v != null)) {
+                return Response.status(200).entity(v.toString()).build();
+            }
+        }
+        String error = "No existe";
+        return Response.status(200).entity(error).build();
+    }
+    
+    @GET
+    @Path("/find_visita_by_nombre_empresa/{nombre}")
+    @Produces(MediaType.TEXT_HTML)
+    public Response find_visita_by_nombre_empresa(@PathParam("nombre") String nombre) {
+        List<Visitas> v = new ArrayList<Visitas>();
+        if (nombre.compareTo("") != 0) {
+            v = Op_Visitas.find_by_nombre_empresa(nombre);
+            if ((nombre != null) && (v != null)) {
+                return Response.status(200).entity(v.toString()).build();
+            }
+        }
+        String error = "No existe";
+        return Response.status(200).entity(error).build();
+    }
+
     @GET
     @Path("/userlogin/{login}")
-    @Produces(MediaType.TEXT_HTML)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response getUSerbyId(@PathParam("login") String login) {
         if (login.compareTo("") != 0) {
             Usuarios emp = Op_Usuarios.find_by_login(login);
@@ -408,7 +452,6 @@ public class App_Service {
                 System.err.print("exception con la fecha " + ex);
             }
 
-           
             String nif = datos.split(",")[4];
             boolean esAdm = false;
             try {
@@ -419,20 +462,19 @@ public class App_Service {
             }
 
             Usuarios user = new Usuarios(login, nombre, apellidos, fnac, "", nif, esAdm);
-             Usuarios old_user=BD.Op_Usuarios.find_by_login(login);
+            Usuarios old_user = BD.Op_Usuarios.find_by_login(login);
             int result = BD.Op_Usuarios.update(old_user.getId(), user);
-            if (result == 1) 
-            {
+            if (result == 1) {
                 return SUCCESS_RESULT;
             }
-        } catch (Exception e) 
-        {
-            System.err.print("Excepcion con Servicio metodo UPdateuser"+e);
+        } catch (Exception e) {
+            System.err.print("Excepcion con Servicio metodo UPdateuser" + e);
             return FAILURE_RESULT;
         }
         return FAILURE_RESULT;
     }
 //
+
     @GET
     @Path("/adduser/{dato}")
     @Produces(MediaType.TEXT_HTML)
@@ -452,7 +494,6 @@ public class App_Service {
                 System.err.print("exception con la fecha " + ex);
             }
 
-           
             String nif = datos.split(",")[4];
             boolean esAdm = false;
             try {
@@ -463,21 +504,17 @@ public class App_Service {
             }
 
             Usuarios user = new Usuarios(login, nombre, apellidos, fnac, "", nif, esAdm);
-             
+
             int result = BD.Op_Usuarios.add(user);
-            if (result == 1) 
-            {
+            if (result == 1) {
                 return SUCCESS_RESULT;
             }
-        } catch (Exception e) 
-        {
-            System.err.print("Excepcion con Servicio metodo Adduser"+e);
+        } catch (Exception e) {
+            System.err.print("Excepcion con Servicio metodo Adduser" + e);
             return FAILURE_RESULT;
         }
         return FAILURE_RESULT;
     }
-    
-    
 
 //    @DELETE
 //    @Path("/users/{userid}")
@@ -489,7 +526,6 @@ public class App_Service {
 //        }
 //        return FAILURE_RESULT;
 //    }
-
 //   @OPTIONS
 //   @Path("/users")
 //   @Produces(MediaType.APPLICATION_XML)

@@ -19,20 +19,49 @@
                 $(".nyroModal").nyroModal();
                 $("input:submit").button();
                 $("#frmBuscar").dialog({autoOpen: false, modal: true, resizable: false});
-            
+
                 $("#error4").dialog({show: "Scale", hide: "Flod", autoOpen: true, modal: true, width: 350, height: 'auto', resizable: false,
-                    buttons: {"Aceptar":function () { $(this).dialog('close');}}});      });
-            
-            function Confirmar() 
+                    buttons: {"Aceptar": function () {
+                            $(this).dialog('close');
+                        }}});
+            });
+
+            function Confirmar()
             {
                 return confirm('¿Estas seguro que deseas borrar la visita?');
             }
+
+            function buscarVisita()
+            {
+                var nombre = document.getElementById("nombre_empresa").value;
+              alert("nombre :"+nombre);
+
+                var respuesta;
+                
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/find_visita_by_nombre_empresa/" + nombre, true);
+                xhttp.send();
+                xhttp.onreadystatechange = function ()
+                {
+                    respuesta = xhttp.responseText;
+                };
+
+
+
+
+                alert(respuesta);
+
+
+
+
+
+            }
         </script>
     </head>
-    <body onload="cargar_visitas(0,10);">
+    <body onload="cargar_visitas(0, 10);">
         <div id="pagina">
             <div id="header" ></div>
-            
+
             <div id="toolbar">      
                 <div class="m_tootlbar">                    
                     <div id="toolbar_botones">
@@ -56,7 +85,9 @@
                                 </a>                                
                             </li>
                         </ul>
-                        <div class="limpiar"></div>
+                        <div class="limpiar">
+                            
+                        </div>
                     </div>
                     <div class="toolbar_titulo icono-48-empresas">
                         <h2>Visitas</h2>
@@ -72,12 +103,13 @@
                             <th>Nombre de Comercial</th>
                             <th width="80p">Motivo</th>
                             <th width="200p">Resultado</th>
-                            <th width="160p">&nbsp;</th>
-                            <th></th>
+                            <th width="160p">Fecha</th>
+                            <th>Operaciones</th>
+
                         </tr>
                     </thead>
                     <tbody>
-                     
+
                     </tbody>
                     <tfoot>
                         <tr>
@@ -87,7 +119,7 @@
                             <td colspan="5">
                                 <ul class="paginar">
 
-                        
+
                                 </ul>                                
                                 <span class="limpiar"></span>
                             </td>
@@ -97,7 +129,7 @@
                 <div class="limpiar"></div>
             </div>
         </div>
-         <div id="pie">
+        <div id="pie">
             <div id="pie_izq">
                 <h6>&copy; 2016</h6>
             </div>
@@ -106,13 +138,13 @@
             </div>            
             <div class="limpiar"></div>
         </div>
-        
+
         <div id="frmBuscar" title="Buscar Empresa">
-            <form method="POST" onsubmit="buscarEmpresa()">
+            <form method="POST" onsubmit="buscarVisita()">
                 <table style="padding: 20px">
                     <tr>
-                        <td width="100">C.I.F.:</td>
-                        <td width="400"><input type="text" name="cif" /></td>
+                        <td width="100">Nombre de Empresa :</td>
+                        <td width="400"><input type="text" id="nombre_empresa" /></td>
                     </tr>
                     <tr>
                         <td colspan="2" align="center">
@@ -123,21 +155,21 @@
                 </table>
             </form>
         </div>
-        
-    <!--
-        <div id="error4" title="Error al buscar">
-            <p class="ui-state-error ui-corner-all" 
-               style="padding: 0.7em; font-size: 1.1em; text-align: center">
-                No existe ninguna empresa con el C.I.F. facilitado
-            </p>    
-        </div>
-    -->
-        
-        
-<script>
-    
-     function cargar_visitas(pos_act,n_visitas)
-            {               
+
+        <!--
+            <div id="error4" title="Error al buscar">
+                <p class="ui-state-error ui-corner-all" 
+                   style="padding: 0.7em; font-size: 1.1em; text-align: center">
+                    No existe ninguna empresa con el C.I.F. facilitado
+                </p>    
+            </div>
+        -->
+
+
+        <script>
+
+            function cargar_visitas(pos_act, n_visitas)
+            {
                 var respuesta;
                 var xhttp = new XMLHttpRequest();
                 xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/listvisitas/" + pos_act + "," + n_visitas, true);
@@ -149,244 +181,156 @@
 
                 xhttp.onload = function ()
                 {
-                    //alert(respuesta);
+                    //alert("Lista General :"+respuesta);
+                    //var lista_general = respuesta.split("<responseList>");
                     var lista_general = respuesta.split("<list xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xs:string\">");
+                    //lista_general.shift();
+                    //alert("Nº listas :"+lista_general.length);
                     lista_general.shift();
-                    alert("Nº listas :"+lista_general.length);
-                    alert(lista_general);
-                    var lista_listas = [];
-                                     
+                    var aux = [];
                     for (var i = 0; i < lista_general.length; i++)
                     {
-                        lista_listas.push(lista_general[i]);                           
+                        aux.push(lista_general[i].split("</list>")[0]);
                     }
-                    var lista_visitas=[];
-                    var lista_auxiliar;
-                    for(var i=0;i<lista_listas.length;i++)
-                    {
-                        lista_auxiliar=lista_listas[i];
-                        for(var j=0;j<lista_auxiliar;j++)
-                        {
-                            
-                        }
-                    }
-                    
-                    list_visitas.push(sublist);
-                    list_visitas.shift();
-                    
-                    alert("NºVisitas :"+list_visitas.length);
-                    alert("list_visitas:"+list_visitas);
-                    var list_visitas_bulk=[];
-                    for(var i=0;i<list_visitas.length;i++)
-                    {
-                        list_visitas_bulk.push(list_visitas[i].toString().replace("</list>",""));
-                    }
-                    alert("list_visitas_bulk: "+list_visitas_bulk);
-                    
+
                     var tbody = document.getElementsByTagName("TBODY")[0];
                     var visita;
                     var tr;
                     var td;
-                    var element;
-                    alert("NºVisitas"+list_visitas.length);
-                    //id+","+empresas+","+usuarios+","+fecha+","+resultado+","+motivo
-                    for (var i = 0; i < list_visitas.length; i++)
+
+
+                    for (var i = 0; i < aux.length; i++) ////aux contiene las visitas.
                     {
+                        var id;
+                        var nombre_empresa; ///3
+                        var nombre_comercial;///14
+                        var motivo; //23
+                        var resultado;//24
+                        var fecha;//22
+                        id = aux[i].split(",")[0];
+                        nombre_empresa = aux[i].split(",")[3];
+                        nombre_comercial = aux[i].split(",")[14];
+                        motivo = aux[i].split(",")[22];
+                        resultado = aux[i].split(",")[21];
+                        fecha = aux[i].split(",")[20];
+
+                        var paquete=id+","+nombre_empresa+","+nombre_comercial+","+motivo+","+resultado+","+fecha;
+                        //alert(aux[i]);
+
                         tr = document.createElement("TR");
+                        var list_visitas = aux;
                         visita = list_visitas[i];
-                       
-                        var id_visita=visita[0];
-                        var empresa=visita[1];
-                        var usuario=visita[2];
-                        var fecha=visita[3];
-                        var resultado=visita[4];
-                        var motivo=visita[5];
-                        
-                        
-                       
+
+
+
+
+
                         //alert(visitas);
-                        td = document.createElement("TD");                        
-                        td.style = "text-align: center";
-                        td.textContent = id_visita;
-                        td.id="id_visita";
-                        tr.appendChild(td);
-                        
-                        td = document.createElement("TD");                        
-                        td.style = "text-align: center";
-                        td.textContent = empresa[1];
-                        td.id="empresa";
-                        tr.appendChild(td);
-                        
-                        td = document.createElement("TD");                        
-                        td.style = "text-align: center";
-                        td.textContent = usuario[1];
-                        td.id="usuario";
-                        tr.appendChild(td);
-                        
-                        td = document.createElement("TD");                        
-                        td.style = "text-align: center";
-                        td.textContent = fecha;
-                        td.id="fecha";
-                        tr.appendChild(td);
-                        
-                        td = document.createElement("TD");                        
-                        td.style = "text-align: center";
-                        td.textContent = resultado;
-                        td.id="resultado";
-                        tr.appendChild(td);
-                        
-                        td = document.createElement("TD");                        
-                        td.style = "text-align: center";
-                        td.textContent = motivo;
-                        td.id="motivo";
-                        tr.appendChild(td);
-                        
-                        
-                    
-                       
-                        /**botonera**/
+                        /*
+                         td = document.createElement("TD");                        
+                         td.style = "text-align: center";
+                         td.textContent = id;
+                         td.id="id_visita";
+                         tr.appendChild(td);
+                         */
+
                         td = document.createElement("TD");
                         td.style = "text-align: center";
-                        
-                        var a=document.createElement("A");
-                        a.href="nueva-visita.html?editar="+id_visita;
-                        var img=document.createElement("IMG");                        
-                        img.src="img/icono16/editar.png";                        
-                        img.alt="editar";
-                        img.title="Editar la visita";
+                        td.textContent = nombre_empresa;
+                        td.id = "empresa";
+                        tr.appendChild(td);
+
+                        td = document.createElement("TD");
+                        td.style = "text-align: center";
+                        td.textContent = nombre_comercial;
+                        td.id = "usuario";
+                        tr.appendChild(td);
+
+
+
+                        td = document.createElement("TD");
+                        td.style = "text-align: center";
+                        td.textContent = motivo;
+                        td.id = "motivo";
+                        tr.appendChild(td);
+
+                        td = document.createElement("TD");
+                        td.style = "text-align: center";
+                        td.textContent = resultado;
+                        td.id = "resultado";
+                        tr.appendChild(td);
+
+                        td = document.createElement("TD");
+                        td.style = "text-align: center";
+                        td.textContent = fecha;
+                        td.id = "fecha";
+                        tr.appendChild(td);
+
+                        tbody.appendChild(tr);
+
+
+
+
+                        /**************botonera**/
+
+                        td = document.createElement("TD");
+                        td.style = "text-align: center";
+
+                        var a = document.createElement("A");
+                        a.href = "nueva-visita.html?editar=" +id;
+                        var img = document.createElement("IMG");
+                        img.src = "img/icono16/editar.png";
+                        img.alt = "editar";
+                        img.title = "Editar la visita";
                         a.appendChild(img);
-                        
+
                         td.appendChild(a);
                         tr.appendChild(td);
-                        
-                        a=document.createElement("A");   
-                        
-                     
-                        img=document.createElement("IMG");
-                        img.src="img/icono16/borrar.png";
-                        img.alt="editar";
-                        img.title="Borrar la visita";
-                        img.addEventListener("click", function(){ Confirmar(); });
+
+                        a = document.createElement("A");
+
+
+                        img = document.createElement("IMG");
+                        img.src = "img/icono16/borrar.png";
+                        img.alt = "editar";
+                        img.title = "Borrar la visita";
+                        img.addEventListener("click", function () {
+                            Confirmar();
+                        });
                         //img.onclick="alert('hola')"
                         a.appendChild(img);
-                        
+
                         td.appendChild(a);
                         tr.appendChild(td);
-                        
+
                         /**--------------------------------------------------------------**/
-                        
-                        a=document.createElement("A");
-                        a.href="verVisita.html?"+id_visita;
-                        a.class="nyroModal";
-                        img=document.createElement("IMG");
-                        img.src="img/icono16/ver.png";
-                        img.alt="editar";
-                        img.title="Ver ficha de empresa";
+
+
+                        a = document.createElement("A");
+                        a.href = "verVisita.html?" + paquete;
+                        a.class = "nyroModal";
+                        img = document.createElement("IMG");
+                        img.src = "img/icono16/ver.png";
+                        img.alt = "editar";
+                        img.title = "Ver ficha de empresa";
                         a.appendChild(img);
-                        
+
                         td.appendChild(a);
                         tr.appendChild(td);
-                            
+
                         tbody.appendChild(tr);
                     }
+
                 };
                 xhttp.onprogress = function ()
                 {
                     //cargar nº usuarios
                     //actualiza_paginador();
                 };
-            };
-    
-    /*  <% Iterator<Visitas> it=listado.iterator();
-                        while (it.hasNext())
-                        {
-                                Visitas v=it.next();
-                        %>
+            }
+            ;
 
-                        <tr>
-                            <td style="display:none"><%=v.getId()%></td>
-                            <td><%=v.getEmpresas().getCif()%></td>
-                            <td><%=v.getUsuarios().getNombre()%></td>
-                            <td align="center"><%=v.getMotivo()%></td>
-                            <td><%=v.getResultado()%></td>
-                            <td align="center">
-                                <%
-                                   SimpleDateFormat fecha = new SimpleDateFormat("dd/MM/yyyy");
-                                   out.print(fecha.format(v.getFecha().getTime()));
-                                %>
-                            </td>
-                            <td align="center">
-                                <a href="nueva-visita.jsp?update=<%=v.getId()%>">
-                                    <img src="img/icono16/editar.png" alt="editar" title="Editar visita" />
-                                </a>
-                                <a href="acciones/borrarVisita.action.jsp?idEmpresa=<%=v.getId()%>" onclick="return Confirmar();">
-                                    <img src="img/icono16/borrar.png" alt="editar" title="Borrar la visita" />
-                                </a>
-                                <a class="nyroModal" href="verEmpresa.jsp?idEmpresa=<%=v.getId()%>">
-                                    <img src="img/icono16/ver.png" alt="editar" title="Ver ficha de empresa" />
-                                </a>
-                            </td>
-                        </tr>
-                        <% }
-                        %>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="2">
-                                <h5>NºVisitas: <%=n_empresas%></h5>
-                            </td>
-                            <td colspan="5">
-                                <ul class="paginar">
 
-                                    <% for (int i = nPaginas - 1; i >= 0; i--) {%>
-                                    <li><a href="visitas.jsp?pag=<%=i%>"><%=(i + 1)%></a></li>
-                                        <% } %>
-                                </ul>                                
-                                <span class="limpiar"></span>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-                <div class="limpiar"></div>
-            </div>
-        </div>
-        <jsp:directive.include file="pie.jsp" />
-        <div id="frmBuscar" title="Buscar Empresa">
-            <form method="POST" action="acciones/buscarEmpresa.action.jsp">
-                <table style="padding: 20px">
-                    <tr>
-                        <td width="100">C.I.F.:</td>
-                        <td width="400"><input type="text" name="cif" /></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" align="center">
-                            <input type="submit" value="Buscar Empresa"/>
-                        </td>
-                    </tr>
-
-                </table>
-            </form>
-        </div>
-        <%
-    if (request.getParameter("error") != null
-            && request.getParameter("error").equals("4")) { %>
-        <div id="error4" title="Error al buscar">
-            <p class="ui-state-error ui-corner-all" 
-               style="padding: 0.7em; font-size: 1.1em; text-align: center">
-                No existe ninguna empresa con el C.I.F. facilitado
-            </p>    
-        </div>
-        <% }%>
-    List listado = Op_Visitas.find(1);
-    
-    
-    int n_empresas = listado.size();
-    int nPaginas = (n_empresas / 10);
-    if (n_empresas % 10 != 0) 
-    {
-        nPaginas++;
-    }
-    */
-</script>
+        </script>
     </body>
 </html>
