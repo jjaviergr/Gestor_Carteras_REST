@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Comerciales - Alta Nueva visita.</title>
+        <link rel="shortcut icon" href="./favicon.ico" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/estilos.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/iconos.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/posicionamiento.css" />
+    </head>
+    <body onload="inicializa()">
+        <div id="pagina">
+            <div id="header"></div>
+            <div id="toolbar">      
+                <div class="m_tootlbar">                    
+                    <div id="toolbar_botones">
+                        <ul>
+                            <li>
+                                <!--<a href="#" onclick="EnviarFormulario();">-->
+                                <a href="#" onclick="enviar_formulario();">    
+                                    <span class="icono-32-aceptar"></span>
+                                    Aceptar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="empresas.html">
+                                    <span class="icono-32-cancelar"></span>
+                                    Cancelar
+                                </a>                                
+                            </li>
+                        </ul>
+                        <div class="limpiar"></div>
+                    </div>
+                    <div class="toolbar_titulo icono-48-empresas">
+                        <h2>Nueva Visita</h2>
+                    </div>                    
+                </div>
+            </div>
+            <div id="content">
+                <script>
+                    /* <%if (error ) {%>
+                     <div class="marcoError">
+                     <p><%=mensaje_Error%></p>
+                     </div>
+                     <% }%>*/
+                </script>
+
+                <form id="altaempresa" method="POST" onsubmit="enviar_formulario();">
+                    <table class="altaVisita">
+                        <!--//Empresa	Nombre de Comercial	Motivo	Resultado	Fecha	Operaciones-->
+                        <tr>
+                            <td><label>Empresa :</label></td>
+                            <td>
+                                <select id="empresa">
+                                    <option value="-1">----Seleccione Empresa------</option>                                   
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label>Comercial :</label></td>
+                            <td>
+                                <select id="comercial">
+                                    <option value="-1">----Seleccione Comercial------</option>                                   
+                                </select>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><label>Motivo :</label></td>
+                            <td><input type="text" id="motivo" /></td>
+                        </tr>
+                        <tr>
+                            <td><label>Resultado :</label></td>
+                            <td><input type="text" id="resultado" /></td>
+                        </tr>
+
+                        <tr>
+                            <td><label>Fecha </label></td>
+                            <td><input type="date" id="fecha"  />
+
+                            </td>
+                        </tr>      
+
+
+
+                    </table>
+                </form>
+            </div>
+        </div>
+        <div id="pie">
+            <div id="pie_izq">
+                <h6>&copy; 2016</h6>
+            </div>
+            <div id="pie_dch">
+                <h6>José Javier García Romero</h6>
+            </div>            
+            <div class="limpiar"></div>
+        </div>
+        <script>
+
+            function enviar_formulario()
+            {
+                var empresa = document.getElementById("empresa");
+                var indice_empresa = empresa.selectedIndex;
+                var options = empresa.getElementsByTagName("OPTION");
+                var nombre_empresa = options[indice_empresa].value;
+
+                var comercial = document.getElementById("comercial");
+                var indice_comercial = comercial.selectedIndex;
+                var options = comercial.getElementsByTagName("OPTION");
+                var nombre_comercial = options[indice_comercial].value;
+
+                var motivo = document.getElementById("motivo").value;
+                var resultado = document.getElementById("resultado").value;
+                var fecha = document.getElementById("fecha").value;
+
+                var paquete = nombre_empresa + "," + nombre_comercial + "," + motivo + "," + resultado + "," + fecha;
+
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/addvisita/" + paquete.toString(), true);
+
+                xhttp.send();
+
+                xhttp.onreadystatechange = function ()
+                {
+                    window.location.href = "http://localhost:8080/GestorCarteras_REST/visitas.html";
+                };
+//                alert(paquete);
+            }
+            ;
+
+            function busca_empresa_by_nombre(nombre_empresa)
+            {
+                var respuesta;
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/findidempresabyname/" + nombre_empresa.toString(), true);
+                xhttp.send();
+
+                xhttp.onreadystatechange = function ()
+                {
+                    respuesta = xhttp.responseText.split(",")[2];
+
+                };
+                return respuesta;
+            }
+            ;
+
+            function busca_comercial_by_comercial(nombre_comercial)
+            {
+                var respuesta;
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/findiduserbyname/" + nombre_comercial.toString(), true);
+                xhttp.send();
+
+                xhttp.onreadystatechange = function ()
+                {
+                    respuesta = xhttp.responseText.split(",")[2];
+
+                };
+                return respuesta;
+            }
+            ;
+
+            function inicializa_edicion()
+            {
+                /**/
+                var id_visita = window.location.href.split("=")[1];
+
+                var respuesta;
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/find_visita_by_id/" + id_visita, true);
+                xhttp.send();
+
+                xhttp.onreadystatechange = function ()
+                {
+                    respuesta=xhttp.responseText;
+                    alert(respuesta);
+                    //respuesta=respuesta.split("<list xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xs:string\">");
+                };
+                /*
+                respuesta.shift();
+                for(var i=0;i<respuesta;i++)
+                {
+                    respuesta[i]=String(respuesta[i]).replace("</list>","");
+                }
+                alert(respuesta);
+        */
+                /*
+                 var id_visita = aux.split(',')[0];
+                 var nombre_empresa = aux.split(',')[1];
+                 var nombre_comercial = aux.split(',')[2];
+                 
+                 var id_empresa = busca_empresa_by_nombre(nombre_empresa);
+                 var id_comercial = busca_comercial_by_comercial(nombre_comercial);
+                 
+                 var motivo = aux.split(',')[3];
+                 var resultado = aux.split(',')[4];
+                 var fecha = aux.split(',')[5];
+                 
+                 document.getElementById("id_visita").value = id_visita;
+                 cargar_comerciales();
+                 cargar_empresas();
+                 document.getElementById("empresa").selectedIndex = id_empresa;
+                 document.getElementById("comercial").selectedIndex = id_comercial;
+                 document.getElementById("motivo").value = motivo;
+                 document.getElementById("resultado").value = resultado;
+                 document.getElementById("fecha").value = fecha;
+                 
+                 */
+
+            }
+
+            function inicializa()
+            {
+                var action = window.location.href.split("?")[1].split("=")[0];
+
+                if (action === "editar")
+                {
+                    inicializa_edicion();
+                    // xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/updateuser/"+datos.toString(),true);
+                }
+                if (action === "alta")
+                {
+                    cargar_empresas();
+                    cargar_comerciales();
+                }
+            }
+            ;
+
+            var bloqueo_comerciales = 0;
+            function cargar_comerciales()
+            {
+                var xhttp = new XMLHttpRequest();
+                var respuesta;
+                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/listusers/0,10", true);
+                xhttp.send();
+                xhttp.onreadystatechange = function ()
+                {
+                    respuesta = xhttp.responseText;
+                };
+
+                xhttp.onload = function ()
+                {
+
+                    var r = respuesta.split("<list xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xs:string\">");
+                    if (bloqueo_comerciales === 0)
+                    {
+                        bloqueo_comerciales = 1;
+
+                        r.shift();
+                        var aux = [];
+                        for (var i = 0; i < r.length; i++)
+                        {
+                            aux.push(r[i].split("</list>")[0]);
+                        }
+
+                        var lista_nombres_comerciales = [];
+                        for (var i = 0; i < aux.length; i++)
+                        {
+                            lista_nombres_comerciales.push(aux[i].split(',')[2]);
+                        }
+
+                        var select_empresa = document.getElementById("comercial");
+                        var option;
+                        for (var i = 0; i < lista_nombres_comerciales.length; i++)
+                        {
+                            option = document.createElement("OPTION");
+                            option.value = lista_nombres_comerciales[i];
+                            option.innerHTML = lista_nombres_comerciales[i];
+                            select_empresa.appendChild(option);
+                        }
+                    }
+                };
+            }
+            ;
+
+            var bloqueo_empresas = 0;
+            function cargar_empresas()
+            {
+                var xhttp = new XMLHttpRequest();
+                var respuesta;
+                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/listempresas/0,10", true);
+                xhttp.send();
+                xhttp.onreadystatechange = function ()
+                {
+                    respuesta = xhttp.responseText;
+                };
+                xhttp.onload = function ()
+                {
+
+                    var r = respuesta.split("<list xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xs:string\">");
+                    if (bloqueo_empresas === 0)
+                    {
+                        bloqueo_empresas = 1;
+
+                        r.shift();
+                        var aux = [];
+                        for (var i = 0; i < r.length; i++)
+                        {
+                            aux.push(r[i].split("</list>")[0]);
+                        }
+
+                        var lista_nombres_empresa = [];
+                        for (var i = 0; i < aux.length; i++)
+                        {
+                            lista_nombres_empresa.push(aux[i].split(',')[2]);
+                        }
+
+                        var select_empresa = document.getElementById("empresa");
+                        var option;
+                        for (var i = 0; i < lista_nombres_empresa.length; i++)
+                        {
+                            option = document.createElement("OPTION");
+                            option.value = lista_nombres_empresa[i];
+                            option.innerHTML = lista_nombres_empresa[i];
+                            select_empresa.appendChild(option);
+                        }
+
+                        //(alert(lista_nombres_empresa);
+                    }
+                };
+            }
+            ;
+
+
+        </script>
+    </body>
+</html>
+

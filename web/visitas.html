@@ -85,7 +85,9 @@
                                 </a>                                
                             </li>
                         </ul>
-                        <div class="limpiar"></div>
+                        <div class="limpiar">
+                            
+                        </div>
                     </div>
                     <div class="toolbar_titulo icono-48-empresas">
                         <h2>Visitas</h2>
@@ -212,6 +214,7 @@
                         resultado = aux[i].split(",")[21];
                         fecha = aux[i].split(",")[20];
 
+                        var paquete=id+","+nombre_empresa+","+nombre_comercial+","+motivo+","+resultado+","+fecha;
                         //alert(aux[i]);
 
                         tr = document.createElement("TR");
@@ -274,7 +277,7 @@
                         td.style = "text-align: center";
 
                         var a = document.createElement("A");
-                        a.href = "nueva-visita.html?editar=" + id;
+                        a.href = "nueva-visita.html?editar=" +id;
                         var img = document.createElement("IMG");
                         img.src = "img/icono16/editar.png";
                         img.alt = "editar";
@@ -304,7 +307,7 @@
 
 
                         a = document.createElement("A");
-                        a.href = "verVisita.html?" + id;
+                        a.href = "verVisita.html?" + paquete;
                         a.class = "nyroModal";
                         img = document.createElement("IMG");
                         img.src = "img/icono16/ver.png";

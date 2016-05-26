@@ -145,7 +145,7 @@ public class Op_Visitas {
             //Query query = session.createQuery(hql);
             
             Criteria cs = session.createCriteria(Visitas.class);
-            cs.add(Restrictions.eq("empresas", em.getId()));
+            cs.add(Restrictions.eq("empresas", em));
             
           
 
@@ -210,6 +210,32 @@ public class Op_Visitas {
         tx.commit();
         session.close();
 
+    }
+
+    public static Visitas find_by_id(String id) {
+        
+        List results = null;
+        Visitas v=null;
+        String cadena;
+        SessionFactory sfactory = HibernateUtil.getSessionFactory();
+        Session session = sfactory.openSession();
+        try {
+            //Query query = session.createQuery(hql);
+            Criteria cs = session.createCriteria(Visitas.class);
+            cs.add(Restrictions.eq("id", Integer.parseInt(id)));            
+            results = cs.list();
+            cadena=results.get(0).toString();
+            int longitud=cadena.split(",").length;
+            v=new Visitas(cadena);
+           // v=new Visitas(cadena.split(",")[0],cadena.split(",")[0],cadena.split(",")[0],cadena.split(",")[0],cadena.split(",")[0],cadena.split(",")[0],);
+
+        } catch (Exception e) {
+
+        } finally {
+            session.close();
+        }
+        
+        return (v);
     }
 
 }
