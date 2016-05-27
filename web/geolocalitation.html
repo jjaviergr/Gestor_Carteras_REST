@@ -10,33 +10,33 @@
         <div id="coord"></div>
         <script>
             var x = document.getElementById("demo");
+            var myVar;
 
-            var stop = 0;
             function parar() {
-                stop = 1;
+                clearInterval(myVar);
             }
             var veces = 0;
 
             function getLocation() {
-               
-              setInterval(function()
-              {
-                  navigator.geolocation.getCurrentPosition(showPosition, showError);
-                  if(stop===1)
-                  {
-                      alert("saliendo");
-                  
-                  }
-                  
-              },3000);                
-                
+
+                myVar = setInterval(function ()
+                {
+                    navigator.geolocation.getCurrentPosition(showPosition, showError);
+                    if (stop === 1)
+                    {
+                        alert("saliendo");
+
+                    }
+
+                }, 9000);
+
                 // veces++;
             }
 
             function showPosition(position)
             {
                 var p = document.createElement("P");
-                p.innerHTML = "Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude + " Tiempo " + new Date().getSeconds() + "veces :" + veces;
+                p.innerHTML = "Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude + " Tiempo " + new Date().getMinutes();
                 var div = document.getElementById("coord");
                 div.appendChild(p);
                 //x.innerHTML = "Latitude: " + position.coords.latitude +     "<br>Longitude: " + position.coords.longitude;
