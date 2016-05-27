@@ -15,7 +15,7 @@
             <column name="usuarios_id" not-null="true" />
         </many-to-one>
         <property name="fecha" type="timestamp">
-            <column name="fecha" length="19" not-null="true" />
+            <column name="fecha" length="19" not-null="false" />
         </property>
         <property name="resultado" type="string">
             <column name="resultado" length="16777215" />

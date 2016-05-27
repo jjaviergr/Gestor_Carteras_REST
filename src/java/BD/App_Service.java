@@ -119,8 +119,8 @@ public class App_Service {
         Visitas v = new Visitas(e, u, motivo, fecha, resultado);
 
         try {
-            Op_Visitas.add(v);
-            mensaje = "ok";
+            int id = Op_Visitas.add(v);
+            mensaje = Integer.toString(id);
         } catch (Exception ex) {
             mensaje = "problema al insertar Visita en Servicio " + ex;
             System.err.print("problema al insertar Visita en Servicio " + ex);
@@ -163,33 +163,40 @@ public class App_Service {
     }
 
     @GET
-    @Path("/valida/{login},{pass}")
-    @Produces(MediaType.TEXT_HTML)
-    public String UserIsValid(@PathParam("login") String login, @PathParam("pass") String pass) {
-        String respuesta = "";
-        if ("".equals(login)) {
-            respuesta = "1";
-        } else if ("".equals(pass)) {
-            respuesta = "2";
-        } else if (!Op_Usuarios.validar(login, Md5.getStringMessageDigest(pass, Md5.MD5))) {
-            respuesta = "3";
-        } else {
-            POJOS.Usuarios usr = BD.Op_Usuarios.find_by_login(login);
-            if (!Op_Usuarios.esAdm(login)) {
-                respuesta = "menu.html?id=" + usr.getId();
+    @Path("/valida_usuario/{datos}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String valida_usuario(@PathParam("datos") String datos) {
 
-            } else {
-                respuesta = "menu_adm.html?id=" + usr.getId();
+        if (datos!=null)
+        {
+            
+            String login=datos.split(",")[0];
+            String pass=datos.split(",")[1];
+            String md5_pass=Md5.getStringMessageDigest(pass, Md5.MD5);
+            int id=BD.Op_Usuarios.validar(login, md5_pass);
+            if(id==-1)
+                return("usuario no valido");
+            else
+            {
+                if (BD.Op_Usuarios.esAdm(login))
+                {                
+                    return ("menu_adm.html?"+Integer.toString(id));
+                }
+                else
+                {
+                    return ("menu.html?"+Integer.toString(id));
+                }
+                
             }
-
         }
+        else
+            return "no hay datos";
 
-        return respuesta;
     }
-
+    
     @GET
     @Path("/nombre/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
     public String getNombre(@PathParam("id") String id) {
 
         try {
@@ -230,18 +237,15 @@ public class App_Service {
     public ResposeList get_coordenadas_by_date(@PathParam("paquete") String paquete) {
         ResposeList rlist = null;
         try {
-            int user_id=Integer.parseInt(paquete.split(",")[0]);
-            SimpleDateFormat sfecha=new SimpleDateFormat("yyyy-MM-dd H:m:s");
-            Date fecha=null;
-            try
-            {
-                fecha=sfecha.parse(paquete.split(",")[1]);
+            int user_id = Integer.parseInt(paquete.split(",")[0]);
+            SimpleDateFormat sfecha = new SimpleDateFormat("yyyy-MM-dd");
+            Date fecha = null;
+            try {
+                fecha = sfecha.parse(paquete.split(",")[1]);
+            } catch (Exception e) {
+                System.err.print("exception con la fecha en contructor coordenadas " + e);
             }
-            catch(Exception e)
-            {
-                 System.err.print("exception con la fecha en contructor coordenadas " + e);
-            }
-            
+
             List lista = BD.Op_Coordenadas.find(user_id, fecha);
             rlist = new ResposeList();
 
@@ -250,6 +254,13 @@ public class App_Service {
             System.err.print(e.getMessage());
         }
         return rlist;
+    }
+
+    @GET
+    @Path("/getprimeravisita")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String GetPrimeraVisita() {
+        return Op_Visitas.get_primera_Visita().toString();
     }
 
     @GET
@@ -331,6 +342,22 @@ public class App_Service {
     }
 
     @GET
+    @Path("/numero_visitas")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String numero_visitas() {
+
+        int numero = -1;
+        try {
+            numero = BD.Op_Visitas.length();
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        } finally {
+            return (String.valueOf(numero));
+        }
+    }
+
+    @GET
     @Path("/numero_usuarios")
     @Produces(MediaType.APPLICATION_XML)
     public String numero_usuarios() {
@@ -344,6 +371,13 @@ public class App_Service {
         } finally {
             return Integer.toString(numero);
         }
+    }
+
+    @GET
+    @Path("/primera_id_visitas")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String get_primera_id_visitas() {
+        return String.valueOf(BD.Op_Visitas.get_minima_id());
     }
 
     @GET
@@ -374,7 +408,7 @@ public class App_Service {
 
     @GET
     @Path("/find_visita_by_id/{id}")
-    @Produces(MediaType.TEXT_XML)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response find_visita_by_id(@PathParam("id") String id) {
         List<Visitas> v = new ArrayList<Visitas>();
         if (id.compareTo("") != 0) {
@@ -392,20 +426,23 @@ public class App_Service {
     @Produces(MediaType.TEXT_HTML)
     public Response find_visita_by_nombre_empresa(@PathParam("nombre") String nombre) {
         List<Visitas> v = new ArrayList<Visitas>();
-        if (nombre.compareTo("") != 0) {
-            v = Op_Visitas.find_by_nombre_empresa(nombre);
-            if ((nombre != null) && (v != null)) {
-                return Response.status(200).entity(v.toString()).build();
+        if (nombre != null) {
+            if (nombre.compareTo("") != 0) {
+                v = Op_Visitas.find_by_nombre_empresa(nombre);
+                if ((v != null) && (v.size() > 0)) {
+                    return Response.status(200).entity(v.toString()).build();
+                }
             }
         }
         String error = "No existe";
         return Response.status(200).entity(error).build();
+
     }
 
     @GET
     @Path("/userlogin/{login}")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response getUSerbyId(@PathParam("login") String login) {
+    public Response getUSerbyLogin(@PathParam("login") String login) {
         if (login.compareTo("") != 0) {
             Usuarios emp = Op_Usuarios.find_by_login(login);
             if (emp != null) {
@@ -417,7 +454,7 @@ public class App_Service {
     }
 
     @GET
-    @Path("/wusers/{userid}")
+    @Path("/userid/{userid}")
     @Produces(MediaType.TEXT_HTML)
     public Response getUser(@PathParam("userid") int userid) {
 
@@ -506,15 +543,14 @@ public class App_Service {
         try {
             String latitud = paquete.split(",")[0];
             String longitud = paquete.split(",")[1];
-            Date fecha=null;
-            try{
-            long f_cadena=Long.parseLong(paquete.split(",")[2]);
-            fecha=new Date(f_cadena);}
-            catch(Exception ex)
-            { 
-                fecha=new Date();
+            Date fecha = null;
+            try {
+                long f_cadena = Long.parseLong(paquete.split(",")[2]);
+                fecha = new Date(f_cadena);
+            } catch (Exception ex) {
+                fecha = new Date();
             }
-           
+
 //            SimpleDateFormat sfecha = new SimpleDateFormat("yyyy-MM-dd");
 //            Date fecha = null;
 //            try {

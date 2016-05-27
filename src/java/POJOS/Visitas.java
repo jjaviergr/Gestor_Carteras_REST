@@ -84,7 +84,10 @@ public class Visitas implements java.io.Serializable {
 
         this.empresas = e;
         this.usuarios = u;
-        this.fecha = f;
+        if (f==null)
+            this.fecha=new Date();
+        else
+            this.fecha = f;
         this.resultado = resultado;
         this.motivo = motivo;
     }

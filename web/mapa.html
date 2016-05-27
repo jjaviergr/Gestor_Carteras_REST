@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script
+            src="https://maps.googleapis.com/maps/api/js?v=3">
+        </script>
+
+        <script>
+            var coordenadas = [];
+            function recupera_coordenadas()
+            {
+                var respuesta;
+                //var login = document.getElementById("login_buscado").value;
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/getcoordenadas/" + "1,2016-03-07", true);
+                xhttp.send();
+                xhttp.onreadystatechange = function ()
+                {
+                    respuesta = xhttp.responseText;
+                };
+                xhttp.onload = function ()
+                {
+                    //alert(respuesta);
+                    respuesta = respuesta.split('<list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">');
+                    for (var i = 0; i < respuesta.length; i++)
+                    {
+                        respuesta[i] = respuesta[i].replace("</list>", "");
+                    }
+                    respuesta.shift();
+
+                    var coordenada;
+                    var latitud;
+                    var longitud;
+                    var x;
+                    for (var i = 0; i < respuesta.length; i++)
+                    {
+                        coordenada = respuesta[i].split(",");
+                        latitud = coordenada[1];
+                        longitud = coordenada[2];
+                        x = new google.maps.LatLng(latitud, longitud);
+                        coordenadas.push(x);
+                    }
+                    //alert(respuesta[0]);
+                    //respuesta=respuesta.split("</list>");
+                  
+
+
+                    var mapProp = {
+                        center: coordenadas[0],
+                        zoom: 13,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };
+
+                    var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+
+                    //alert(coordenadas.length);
+                    var myTrip = coordenadas;
+                    var flightPath = new google.maps.Polyline({
+                        path: myTrip,
+                        strokeColor: "#FF0000",
+                        strokeOpacity: 0.8,
+                        strokeWeight: 1.5
+                    });
+
+                    flightPath.setMap(map);
+                };
+
+
+
+
+
+            }
+            ;
+            //google.maps.event.addDomListener(window, 'load', initialize);
+        </script>
+    </head>
+
+    <body onload="recupera_coordenadas()" >
+        <div id="googleMap" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;"></div>
+    </body>
+</html>

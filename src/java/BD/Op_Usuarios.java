@@ -119,8 +119,9 @@ public class Op_Usuarios {
                 resultado = (Usuarios) results.get(0);
             }
 
-        } catch (Exception e) {
-
+        } catch (Exception e)
+        {
+             System.err.print("Excepcion en find_by_login "+e);
         } finally {
             session.close();
         }
@@ -174,14 +175,14 @@ public class Op_Usuarios {
 
     }
 
-    public static boolean validar(String login, String pass) {
+    public static int validar(String login, String pass) {
         POJOS.Usuarios user = Op_Usuarios.find_by_login(login);
         if (user != null) {
             if (user.getPass().matches(pass)) {
-                return true;
+                return ((int)user.getId());
             }
         }
-        return false;
+        return ((int)-1);
     }
 
     public static String imprimir(Usuarios u) {

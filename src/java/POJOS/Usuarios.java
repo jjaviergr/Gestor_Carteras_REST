@@ -28,7 +28,7 @@ public class Usuarios implements java.io.Serializable {
     @Override
     public String toString() 
     {
-        String cadena=id+","+login+","+nombre+","+apellidos+","+fnac+","+pass+","+nif+","+esAdm;
+        String cadena=id+","+login+","+nombre+","+apellidos+","+fnac+","+fu+","+pass+","+nif+","+esAdm;
         
         return cadena;
     }

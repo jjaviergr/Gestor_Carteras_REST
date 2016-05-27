@@ -110,7 +110,7 @@ public class Empresas implements java.io.Serializable {
 
     }
 
-    public Empresas(String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta) {
+    public Empresas(String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta,String Contacto) {
         this.nombre = nombre;
         this.direccion = direccion;
         this.provincia = provincia;
@@ -119,6 +119,7 @@ public class Empresas implements java.io.Serializable {
         this.tlf = tlf;
         this.comercial = comercial;
         this.fechaAlta = fechaAlta;
+        this.contacto=Contacto;
     }
 
     public Integer getId() {

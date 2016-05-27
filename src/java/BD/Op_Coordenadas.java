@@ -189,7 +189,13 @@ public class Op_Coordenadas {
             //Query query = session.createQuery(hql);
             Criteria cs = session.createCriteria(Coordenadas.class);
             cs.add(Restrictions.eq("usuariosId", user_id));
-            cs.add(Restrictions.eq("date", fecha));
+            /**/
+            long numero=fecha.getTime();
+            long undia=86400000;
+            long menos=numero-undia;
+            long mas=numero+undia;
+            cs.add(Restrictions.gt("date", new Date(menos)));
+            cs.add(Restrictions.lt("date", new Date(mas)));
             results = cs.list();
             //tx.commit();
 

@@ -8,10 +8,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -22,6 +25,42 @@ import org.hibernate.criterion.Restrictions;
  * @author pc
  */
 public class Op_Visitas {
+
+    
+    public static int get_minima_id()
+    {
+        int id_primera=-1;
+        SessionFactory sfactory = HibernateUtil.getSessionFactory();
+        Session session = sfactory.openSession();
+
+        String hql1 = "SELECT MIN(V.id) FROM Visitas V";
+        Query query1 = session.createQuery(hql1);
+        if (query1.list().size() > 0) 
+        {
+            id_primera = (Integer) query1.list().get(0);
+        }
+        return id_primera;
+    }
+    
+    public static Visitas get_primera_Visita() {
+        Visitas una = null;
+        SessionFactory sfactory = HibernateUtil.getSessionFactory();
+        Session session = sfactory.openSession();
+
+        String hql1 = "SELECT MIN(V.id) FROM Visitas V";
+        Query query1 = session.createQuery(hql1);
+        if (query1.list().size() > 0) 
+        {
+            int id_primera = (Integer) query1.list().get(0);
+
+            String hql2 = "FROM Visitas v WHERE v.id = :Visitas_id";
+            Query query2 = session.createQuery(hql2);
+            query2.setParameter("Visitas_id", id_primera);
+
+            una = (Visitas) query2.list().get(0);
+        }
+        return una;
+    }
 
     @XmlElement
     public static List<Visitas> list() {
@@ -53,7 +92,7 @@ public class Op_Visitas {
             String resultado;
             String motivo;
             List<Visitas> lista_visitas = new ArrayList();
-            for (int j=0;j<lista_cadenas.size();j++) {
+            for (int j = 0; j < lista_cadenas.size(); j++) {
 
                 String[] elemento = lista_cadenas.get(j).split(",");//(1, 9);
                 id = Integer.parseInt(elemento[0]);//1 de visita //9 son emprresa // 8 son de usuario // 2 son de visita //total 20
@@ -67,18 +106,14 @@ public class Op_Visitas {
                     lusuarios.add(elemento[i]);
                 }
                 u = new Usuarios(lusuarios);
-         
+
                 SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");
-                try 
-                {
+                try {
                     f = fecha.parse(elemento[20]);
-                } 
-                catch (ParseException ex) 
-                {
+                } catch (ParseException ex) {
                     System.err.print("exception con la fecha en contructor empresa " + ex);
-                    f=null;
+                    f = null;
                 }
-                
 
                 resultado = elemento[21];
                 motivo = elemento[22];
@@ -86,13 +121,12 @@ public class Op_Visitas {
                 v = new Visitas(id, e, u, motivo, f, resultado);
                 lista_visitas.add(v);
             }
-            results=lista_visitas;
+            results = lista_visitas;
             //////////////////
 
             //System.err.print("pruebas :" + lista_visitas);
 //Empresas empresas, Usuarios usuarios, Date fecha, String resultado, String motivo
 //                v=new Visitas(id,e,u,motivo,f,resultado);
-
             //results.add(v);
         } catch (Exception e) {
             System.err.print(e.toString());
@@ -102,14 +136,29 @@ public class Op_Visitas {
         return (results);
     }
 
-    public static void add(POJOS.Visitas u) {
+    /**
+     * Devuelve el nº de visitas de la bd
+     *
+     * @return
+     */
+    public static int length() {
+        String hql = "SELECT count(distinct v.id) FROM Visitas v";
+        SessionFactory sfactory = HibernateUtil.getSessionFactory();
+        Session session = sfactory.openSession();
+        Query query = session.createQuery(hql);
+        List results = query.list();
+        return (results.size());
+    }
+
+    public static int add(POJOS.Visitas u) {
         SessionFactory sfactory = HibernateUtil.getSessionFactory();
         Session session = sfactory.openSession();
         Transaction tx = session.beginTransaction();
-
-        session.save(u); //almacena el objeto en contexto de persistencia
+        Integer id=(Integer) session.save(u); //almacena el objeto en contexto de persistencia
+        
         tx.commit(); //confirma transacción (sincronización con base de datos)
         session.close();
+        return id;
     }
 
     public static List find(int user_id, Date fecha) {
@@ -132,30 +181,61 @@ public class Op_Visitas {
         return (results);
     }
 
-    public static List find_by_nombre_empresa(String  nombre_empresa) {
-        List results = null;
-         Empresas em=Op_Empresas.find_by_name(nombre_empresa);
-         Integer id=em.getId();
-        SessionFactory sfactory = HibernateUtil.getSessionFactory();
-        Session session = sfactory.openSession();
-        try {
-           
-            
-            //Query query = session.createQuery(hql);
-            
-            Criteria cs = session.createCriteria(Visitas.class);
-            cs.add(Restrictions.eq("empresas", em));
-            
-          
-
-            results = cs.list();
-            //tx.commit();
-
-        } catch (Exception e) {
-
-        } finally {
-            session.close();
-        }
+    public static List find_by_nombre_empresa(String nombre_empresa) {
+        List results = new ArrayList();
+        results.add("POR IMPLEMENTAR");
+//        Empresas em = Op_Empresas.find_by_name(nombre_empresa);
+//        Integer id = em.getId();
+//        
+//        SessionFactory sfactory = HibernateUtil.getSessionFactory();
+//        Session session = sfactory.openSession();
+//       // Transaction tx = null;
+//        try
+//        {
+//           // tx = session.beginTransaction();
+//            String sql = "SELECT * FROM Visitas where Empresas like '"+em+"'";
+//            SQLQuery query = session.createSQLQuery(sql);
+//            query.addEntity(Visitas.class);
+//            results = query.list();
+//
+//
+//            //tx.commit();
+//          }
+//          catch (HibernateException e) 
+//          {
+//            // if (tx!=null) tx.rollback();
+//             e.printStackTrace(); 
+//          }
+//          finally 
+//          {
+//             session.close(); 
+//          }
+////        SessionFactory sfactory = HibernateUtil.getSessionFactory();
+////        Session session = sfactory.openSession();
+////        try {
+////
+////            //Query query = session.createQuery(hql);
+////            Criteria cs = session.createCriteria(Visitas.class);
+////            cs.add(Restrictions.eq("empresas", em));
+////            if (cs.list().size() > 0) {
+////                List<String> lista = new ArrayList();
+////                String resultado = cs.list().toString();
+////                Visitas v=new Visitas(resultado);                
+////                results=new ArrayList();
+////                results.add(v);
+////                
+////            }
+////
+////            
+////            //tx.commit();
+////            return (results);
+////
+////        } catch (Exception e) {
+////
+////        } finally {
+////            session.close();
+////            return (results);
+////        }
         return (results);
     }
 
@@ -212,28 +292,28 @@ public class Op_Visitas {
     }
 
     public static Visitas find_by_id(String id) {
-        
+
         List results = null;
-        Visitas v=null;
+        Visitas v = null;
         String cadena;
         SessionFactory sfactory = HibernateUtil.getSessionFactory();
         Session session = sfactory.openSession();
         try {
             //Query query = session.createQuery(hql);
             Criteria cs = session.createCriteria(Visitas.class);
-            cs.add(Restrictions.eq("id", Integer.parseInt(id)));            
+            cs.add(Restrictions.eq("id", Integer.parseInt(id)));
             results = cs.list();
-            cadena=results.get(0).toString();
-            int longitud=cadena.split(",").length;
-            v=new Visitas(cadena);
-           // v=new Visitas(cadena.split(",")[0],cadena.split(",")[0],cadena.split(",")[0],cadena.split(",")[0],cadena.split(",")[0],cadena.split(",")[0],);
+            cadena = results.get(0).toString();
+            int longitud = cadena.split(",").length;
+            v = new Visitas(cadena);
+            // v=new Visitas(cadena.split(",")[0],cadena.split(",")[0],cadena.split(",")[0],cadena.split(",")[0],cadena.split(",")[0],cadena.split(",")[0],);
 
         } catch (Exception e) {
 
         } finally {
             session.close();
         }
-        
+
         return (v);
     }
 
