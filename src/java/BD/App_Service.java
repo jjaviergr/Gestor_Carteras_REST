@@ -506,8 +506,14 @@ public class App_Service {
         try {
             String latitud = paquete.split(",")[0];
             String longitud = paquete.split(",")[1];
+            Date fecha=null;
+            try{
             long f_cadena=Long.parseLong(paquete.split(",")[2]);
-            Date fecha=new Date(f_cadena);
+            fecha=new Date(f_cadena);}
+            catch(Exception ex)
+            { 
+                fecha=new Date();
+            }
            
 //            SimpleDateFormat sfecha = new SimpleDateFormat("yyyy-MM-dd");
 //            Date fecha = null;
