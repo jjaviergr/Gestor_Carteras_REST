@@ -498,7 +498,7 @@ public class App_Service {
 
     @GET
     @Path("/addcoord/{coord}")
-    @Produces(MediaType.TEXT_HTML)
+    //@Produces(MediaType.TEXT_HTML)
     @Consumes(MediaType.TEXT_HTML)
     public void AddCoordenada(@PathParam("coord") String paquete) {
         System.err.print(paquete);
@@ -523,7 +523,7 @@ public class App_Service {
 //                System.err.print("exception con la fecha en contructor coordenada " + ex);
 //                fecha = null;
 //            }
-            int usuario_id = Integer.parseInt(paquete.split(",")[4]);
+            int usuario_id = Integer.parseInt(paquete.split(",")[3]);
 
             Coordenadas C = new Coordenadas(latitud, longitud, fecha, usuario_id);
             BD.Op_Coordenadas.add(C);

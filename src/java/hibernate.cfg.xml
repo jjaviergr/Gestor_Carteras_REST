@@ -5,7 +5,7 @@
     <!-- BD u242229152_comer	/ usuario u242229152_jose  /	host mysql.hostinger.es -->
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/comerciales2?zeroDateTimeBehavior=convertToNull</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/comerciales?zeroDateTimeBehavior=convertToNull</property>
     <property name="hibernate.connection.username">carterista</property>
     <property name="hibernate.connection.password">123456</property>
     <property name="hibernate.show_sql">false</property>
