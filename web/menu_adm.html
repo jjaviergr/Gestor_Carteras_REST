@@ -134,7 +134,7 @@
             } ;
 
             function onDeviceReady() {
-                var options = {enableHighAccuracy: false, timeout: 60000, maximumAge: 0};               
+                var options = {enableHighAccuracy: false, timeout: 15000, maximumAge: 0};               
                 navigator.geolocation.getCurrentPosition(geoWin, geoFail, options);
             } ;
             //watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);

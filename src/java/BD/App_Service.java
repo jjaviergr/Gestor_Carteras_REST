@@ -9,6 +9,7 @@ package BD;
  *
  * @author pc
  */
+import POJOS.Coordenadas;
 import POJOS.Empresas;
 import POJOS.Usuarios;
 import POJOS.Visitas;
@@ -102,36 +103,28 @@ public class App_Service {
         //Empresas e, Usuarios u, String motivo, Date f, String resultado
         String[] datos = paquete.split(",");
 
-        Empresas e=BD.Op_Empresas.find_by_name(datos[0]);
-        Usuarios u=BD.Op_Usuarios.find_by_name(datos[1]);
-        
+        Empresas e = BD.Op_Empresas.find_by_name(datos[0]);
+        Usuarios u = BD.Op_Usuarios.find_by_name(datos[1]);
+
         SimpleDateFormat sfecha = new SimpleDateFormat("yyyy-MM-dd");
         Date fecha = null;
-        try 
-        {
+        try {
             fecha = sfecha.parse(datos[4]);
-        } 
-        catch (ParseException ex) 
-        {
+        } catch (ParseException ex) {
             System.err.print("exception con la fecha en contructor empresa " + ex);
         }
-        String resultado=datos[2];
-        String motivo=datos[3];
-        
-        Visitas v = new Visitas(e,u,motivo,fecha,resultado);      
-        
-        try 
-        {
+        String resultado = datos[2];
+        String motivo = datos[3];
+
+        Visitas v = new Visitas(e, u, motivo, fecha, resultado);
+
+        try {
             Op_Visitas.add(v);
             mensaje = "ok";
-        } 
-        catch (Exception ex) 
-        {
+        } catch (Exception ex) {
             mensaje = "problema al insertar Visita en Servicio " + ex;
             System.err.print("problema al insertar Visita en Servicio " + ex);
-        } 
-        finally 
-        {
+        } finally {
             return mensaje;
         }
     }
@@ -232,6 +225,34 @@ public class App_Service {
     }
 
     @GET
+    @Path("/getcoordenadas/{paquete}")
+    @Produces(MediaType.APPLICATION_XML)
+    public ResposeList get_coordenadas_by_date(@PathParam("paquete") String paquete) {
+        ResposeList rlist = null;
+        try {
+            int user_id=Integer.parseInt(paquete.split(",")[0]);
+            SimpleDateFormat sfecha=new SimpleDateFormat("yyyy-MM-dd H:m:s");
+            Date fecha=null;
+            try
+            {
+                fecha=sfecha.parse(paquete.split(",")[1]);
+            }
+            catch(Exception e)
+            {
+                 System.err.print("exception con la fecha en contructor coordenadas " + e);
+            }
+            
+            List lista = BD.Op_Coordenadas.find(user_id, fecha);
+            rlist = new ResposeList();
+
+            rlist.setList(lista);
+        } catch (Exception e) {
+            System.err.print(e.getMessage());
+        }
+        return rlist;
+    }
+
+    @GET
     @Path("/listvisitas/{pos_act},{n_visitas}")
     @Produces(MediaType.APPLICATION_XML)
     public ResposeList ListVisitas(@PathParam("pos_act") int pos_act, @PathParam("n_visitas") int n_visitas) {
@@ -256,7 +277,7 @@ public class App_Service {
         }
         return rlist;
     }
-    
+
     @GET
     @Path("/listusers/{pos_act},{n_users}")
     @Produces(MediaType.APPLICATION_XML)
@@ -351,7 +372,7 @@ public class App_Service {
         return rlist;
     }
 
-     @GET
+    @GET
     @Path("/find_visita_by_id/{id}")
     @Produces(MediaType.TEXT_XML)
     public Response find_visita_by_id(@PathParam("id") String id) {
@@ -365,7 +386,7 @@ public class App_Service {
         String error = "No existe";
         return Response.status(200).entity(error).build();
     }
-    
+
     @GET
     @Path("/find_visita_by_nombre_empresa/{nombre}")
     @Produces(MediaType.TEXT_HTML)
@@ -474,6 +495,37 @@ public class App_Service {
         return FAILURE_RESULT;
     }
 //
+
+    @GET
+    @Path("/addcoord/{coord}")
+    @Produces(MediaType.TEXT_HTML)
+    @Consumes(MediaType.TEXT_HTML)
+    public void AddCoordenada(@PathParam("coord") String paquete) {
+        System.err.print(paquete);
+        //Coordenadas(String glatitud, String glongitud, Date date, Integer usuariosId)
+        try {
+            String latitud = paquete.split(",")[0];
+            String longitud = paquete.split(",")[1];
+            long f_cadena=Long.parseLong(paquete.split(",")[2]);
+            Date fecha=new Date(f_cadena);
+           
+//            SimpleDateFormat sfecha = new SimpleDateFormat("yyyy-MM-dd");
+//            Date fecha = null;
+//            try {
+//                fecha = sfecha.parse(paquete.split(",")[2]);
+//            } catch (ParseException ex) {
+//                System.err.print("exception con la fecha en contructor coordenada " + ex);
+//                fecha = null;
+//            }
+            int usuario_id = Integer.parseInt(paquete.split(",")[4]);
+
+            Coordenadas C = new Coordenadas(latitud, longitud, fecha, usuario_id);
+            BD.Op_Coordenadas.add(C);
+        } catch (Exception e) {
+            System.err.print("Excepcion con Servicio metodo Adduser" + e);
+        }
+
+    }
 
     @GET
     @Path("/adduser/{dato}")

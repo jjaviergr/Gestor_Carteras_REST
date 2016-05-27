@@ -6,8 +6,11 @@
 
         <button onclick="getLocation()">Try It</button>
         <button onclick="parar()">parar</button>
+        
         <p id="demo"></p>
+        
         <div id="coord"></div>
+        
         <script>
             var x = document.getElementById("demo");
             var myVar;
@@ -21,28 +24,51 @@
 
                 myVar = setInterval(function ()
                 {
+                   // alert("lanzando");
                     navigator.geolocation.getCurrentPosition(showPosition, showError);
                     if (stop === 1)
                     {
-                        alert("saliendo");
+                     //   alert("saliendo");
 
                     }
 
-                }, 60000);
+                }, 10000);
 
                 // veces++;
             }
 
             function showPosition(position)
             {
+               // alert("mostrando");
+                var id_usuario=1;
+                var latitud=position.coords.latitude;
+                var longitud=position.coords.longitude;
+                var fecha=new Date().getTime()
+               
+                //String glatitud, String glongitud, Date date, Integer usuariosId
+                var paquete=latitud+","+longitud+","+fecha+","+id_usuario;
+                
+              //  alert("enviando "+paquete);
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "http://localhost:8080/GestorCarteras_REST/rest/App_Service/addcoord/"+paquete,true);
+                xhttp.send();
+                /*
+                xhttp.onreadystatechange = function ()
+                {                     
+                    respuesta = xhttp.responseText;
+                     
+                };
+                */
+                
                 var p = document.createElement("P");
-                p.innerHTML = "Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude + " Tiempo " + new Date().getMinutes();
+                p.innerHTML = "Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude + " Tiempo " + new Date().getTime();
                 var div = document.getElementById("coord");
                 div.appendChild(p);
                 //x.innerHTML = "Latitude: " + position.coords.latitude +     "<br>Longitude: " + position.coords.longitude;
             }
 
             function showError(error) {
+                var p = document.createElement("P");
                 switch (error.code) {
                     case error.PERMISSION_DENIED:
                         x.innerHTML = "User denied the request for Geolocation."
@@ -56,7 +82,11 @@
                     case error.UNKNOWN_ERROR:
                         x.innerHTML = "An unknown error occurred."
                         break;
+
                 }
+                p.innerHTML = x;
+                var div = document.getElementById("coord");
+                div.appendChild(p);
             }
         </script>
 

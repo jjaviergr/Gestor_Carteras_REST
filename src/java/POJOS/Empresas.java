@@ -1,5 +1,5 @@
 package POJOS;
-// Generated 02-may-2016 18:45:51 by Hibernate Tools 4.3.1
+// Generated 27-may-2016 11:01:44 by Hibernate Tools 4.3.1
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,6 +25,61 @@ public class Empresas implements java.io.Serializable {
     private Date fechaAlta;
     private String contacto;
     private Set visitases = new HashSet(0);
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null) {
+            return false;
+        } else if (!(object instanceof Empresas)) {
+            return false;
+        } else {
+            Empresas e = (Empresas) object;
+            if (id == e.getId()
+                    && nombre.equals(e.getNombre())
+                    && cif.equals(e.getCif())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        String cadena = id + "," + cif + "," + nombre + "," + direccion + "," + provincia + "," + poblacion + "," + cp + "," + tlf + "," + comercial + "," + fechaAlta + "," + contacto;
+        return cadena;
+    }
+
+    public Empresas() {
+    }
+
+    public Empresas(String cif, String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, String contacto) {
+        this.cif = cif;
+        this.nombre = nombre;
+        this.direccion = direccion;
+        this.provincia = provincia;
+        this.poblacion = poblacion;
+        this.cp = cp;
+        this.tlf = tlf;
+        this.comercial = comercial;
+        this.fechaAlta = new Date();
+        this.contacto = contacto;
+        this.visitases = null;
+
+    }
+
+    public Empresas(String cif, String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta, String contacto, Set visitases) {
+        this.cif = cif;
+        this.nombre = nombre;
+        this.direccion = direccion;
+        this.provincia = provincia;
+        this.poblacion = poblacion;
+        this.cp = cp;
+        this.tlf = tlf;
+        this.comercial = comercial;
+        this.fechaAlta = fechaAlta;
+        this.contacto = contacto;
+        this.visitases = visitases;
+    }
 
     public Empresas(List<String> lista) {
         this.id = Integer.parseInt(lista.get(0));
@@ -55,59 +110,7 @@ public class Empresas implements java.io.Serializable {
 
     }
 
-    @Override
-    public boolean equals(Object object) {
-        if (object == null) {
-            return false;
-        } else if (!(object instanceof Empresas)) {
-            return false;
-        } else {
-            Empresas e = (Empresas) object;
-            if (id == e.getId()
-                    && nombre.equals(e.getNombre())
-                    && cif.equals(e.getCif())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public String toString() {
-        String cadena = id + "," + cif + "," + nombre + "," + direccion + "," + provincia + "," + poblacion + "," + cp + "," + tlf + "," + comercial + "," + fechaAlta + "," + contacto;
-        return cadena;
-    }
-
-    public Empresas() {
-    }
-
-//    public Empresas(String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta) {
-//        this.nombre = nombre;
-//        this.direccion = direccion;
-//        this.provincia = provincia;
-//        this.poblacion = poblacion;
-//        this.cp = cp;
-//        this.tlf = tlf;
-//        this.comercial = comercial;
-//        this.fechaAlta = fechaAlta;
-//    }
-    public Empresas(String cif, String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, String contacto) {
-        this.cif = cif;
-        this.nombre = nombre;
-        this.direccion = direccion;
-        this.provincia = provincia;
-        this.poblacion = poblacion;
-        this.cp = cp;
-        this.tlf = tlf;
-        this.comercial = comercial;
-        this.fechaAlta = new Date();
-        this.contacto = contacto;
-        this.visitases = null;
-
-    }
-
-    public Empresas(String cif, String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta, String contacto, Set visitases) {
-        this.cif = cif;
+    public Empresas(String nombre, String direccion, String provincia, String poblacion, String cp, int tlf, int comercial, Date fechaAlta) {
         this.nombre = nombre;
         this.direccion = direccion;
         this.provincia = provincia;
@@ -116,11 +119,8 @@ public class Empresas implements java.io.Serializable {
         this.tlf = tlf;
         this.comercial = comercial;
         this.fechaAlta = fechaAlta;
-        this.contacto = contacto;
-        this.visitases = visitases;
     }
 
-    
     public Integer getId() {
         return this.id;
     }
