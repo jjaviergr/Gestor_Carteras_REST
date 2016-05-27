@@ -16,34 +16,27 @@
                 stop = 1;
             }
             var veces = 0;
+
             function getLocation() {
-
-                var inicio = new Date().getMinutes();
-
-                var final;
-                console.log("localizando");
-                if ((navigator.geolocation))
-                {
-                    navigator.geolocation.getCurrentPosition(showPosition,showError);
-                    while (veces < 50)
-                    {
-
-                        navigator.geolocation.getCurrentPosition(showPosition,showError);
-                        veces++;
-                    }
-                } else
-                {
-                    x.innerHTML = "Geolocation is not supported by this browser.";
-                }
-                var final = new Date().getMinutes();
-
+               
+              setInterval(function()
+              {
+                  navigator.geolocation.getCurrentPosition(showPosition, showError);
+                  if(stop===1)
+                  {
+                      alert("saliendo");
+                  
+                  }
+                  
+              },3000);                
+                
+                // veces++;
             }
-
 
             function showPosition(position)
             {
                 var p = document.createElement("P");
-                p.innerHTML = "Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude + " Tiempo" + new Date().getMinutes() + "veces :" + veces;
+                p.innerHTML = "Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude + " Tiempo " + new Date().getSeconds() + "veces :" + veces;
                 var div = document.getElementById("coord");
                 div.appendChild(p);
                 //x.innerHTML = "Latitude: " + position.coords.latitude +     "<br>Longitude: " + position.coords.longitude;
