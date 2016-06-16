@@ -89,7 +89,7 @@ public class App_Service {
 
     @GET
     @Path("/empresabycif/{cif}")
-    @Produces(MediaType.TEXT_HTML)
+    @Produces(MediaType.TEXT_PLAIN)
     public String EmpresaByCIF(@PathParam("cif") String CIF) {
         Empresas e = BD.Op_Empresas.find(CIF);
         return (e.toString());
@@ -231,6 +231,21 @@ public class App_Service {
         return rlist;
     }
 
+    /**
+     * Devuelve todas las fechas en las que el usuario id ha grabado coordenadas
+     * @param id
+     * @return Un String separado por ',';
+     */
+    @GET
+    @Path("/getfechas_de_coordenadas/{id}")
+    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String getfechas_de_coordenadas(@PathParam("id") String id)
+    {
+        return (BD.Op_Usuarios.getFechasCoordenadas(id));
+    }
+    
+    
     @GET
     @Path("/getcoordenadas/{paquete}")
     @Produces(MediaType.APPLICATION_XML)

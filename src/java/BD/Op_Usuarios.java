@@ -2,10 +2,12 @@ package BD;
 
 import POJOS.Usuarios;
 import es.cartera.HibernateUtil;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlElement;
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,13 +19,59 @@ import org.hibernate.criterion.Restrictions;
  * @author pc
  */
 public class Op_Usuarios {
-
+    
+    public static String getFechasCoordenadas(String id) {
+        String lista = "";
+        String resultado="";
+       
+        List results;
+        try 
+        {
+            int clave = Integer.parseInt(id);
+            SessionFactory sfactory = HibernateUtil.getSessionFactory();
+            Session session = sfactory.openSession();
+            String hql = "select str(year(Date)),str(month(Date)),str(day( Date ))  from Coordenadas group by year(Date),month(Date),day( Date )"; 
+            //SELECT Date(Date) FROM `Coordenadas` where usuarios_id=1 group by Date(Date)
+            Query query = session.createQuery(hql);
+            
+            
+            results = query.list();
+            String fecha="";
+            String lista_fechas="";
+            
+            for(int i=0;i<results.size();i++)
+            {
+                Object[] v=(Object [])results.get(i);
+                for(int j=0;j<3;j++)
+                {
+                    lista_fechas+=v[j];
+                    if(j==2)
+                        lista_fechas+=",";
+                    else
+                        lista_fechas+="-";
+                }
+            }
+          lista_fechas=lista_fechas.substring(0, lista_fechas.length()-1);
+          
+          resultado=lista_fechas;
+          
+        } 
+        catch (NumberFormatException e) 
+        {
+            System.err.print("NumberFormatExcepcion en getFechasCoordenadas " + e);
+        } catch (HibernateException e) {
+            System.err.print("HibernateExcepcion en getFechasCoordenadas " + e);
+        }
+        
+        return resultado;
+    }
+    
     public static int add(POJOS.Usuarios u) {
         try {
             SessionFactory sfactory = HibernateUtil.getSessionFactory();
             Session session = sfactory.openSession();
             Transaction tx = session.beginTransaction();
-
+            
             session.save(u); //almacena el objeto en contexto de persistencia
             tx.commit(); //confirma transacción (sincronización con base de datos)
             session.close();
@@ -32,10 +80,10 @@ public class Op_Usuarios {
             return 0;
         }
     }
-
+    
     public static Usuarios find_by_id(int id) {
         Usuarios resultado = null;
-
+        
         SessionFactory sfactory = HibernateUtil.getSessionFactory();
         Session session = sfactory.openSession();
         try {
@@ -45,12 +93,12 @@ public class Op_Usuarios {
             List results = cs.list();
             //tx.commit();
             if (!results.isEmpty()) {
-
+                
                 resultado = (Usuarios) results.get(0);
             }
-
+            
         } catch (Exception e) {
-
+            
         } finally {
             session.close();
         }
@@ -60,28 +108,26 @@ public class Op_Usuarios {
     @XmlElement
     public static List<Usuarios> list() {
         List<Usuarios> results = null;
-
+        
         SessionFactory sfactory = HibernateUtil.getSessionFactory();
         Session session = sfactory.openSession();
         try {
             String hql = "from Usuarios";
             Query query = session.createQuery(hql);
-
+            
             results = query.list();
-
+            
         } catch (Exception e) {
-              System.err.print(e.toString());
+            System.err.print(e.toString());
         } finally {
             session.close();
         }
         return (results);
     }
-
     
-    public static Usuarios find_by_NIF(String nif)
-    {
-         Usuarios resultado = null;
-
+    public static Usuarios find_by_NIF(String nif) {
+        Usuarios resultado = null;
+        
         SessionFactory sfactory = HibernateUtil.getSessionFactory();
         Session session = sfactory.openSession();
         try {
@@ -91,12 +137,12 @@ public class Op_Usuarios {
             List results = cs.list();
             //tx.commit();
             if (!results.isEmpty()) {
-
+                
                 resultado = (Usuarios) results.get(0);
             }
-
+            
         } catch (Exception e) {
-
+            
         } finally {
             session.close();
         }
@@ -105,7 +151,7 @@ public class Op_Usuarios {
     
     public static Usuarios find_by_login(String login) {
         Usuarios resultado = null;
-
+        
         SessionFactory sfactory = HibernateUtil.getSessionFactory();
         Session session = sfactory.openSession();
         try {
@@ -115,85 +161,78 @@ public class Op_Usuarios {
             List results = cs.list();
             //tx.commit();
             if (!results.isEmpty()) {
-
+                
                 resultado = (Usuarios) results.get(0);
             }
-
-        } catch (Exception e)
-        {
-             System.err.print("Excepcion en find_by_login "+e);
+            
+        } catch (Exception e) {
+            System.err.print("Excepcion en find_by_login " + e);
         } finally {
             session.close();
         }
         return (resultado);
     }
-
+    
     public static int update(int id, POJOS.Usuarios u) {
-        try
-        {
+        try {
             SessionFactory sfactory = HibernateUtil.getSessionFactory();
             Session session = sfactory.openSession();
             Transaction tx = session.beginTransaction();
-
+            
             POJOS.Usuarios old_user = null;
-
+            
             old_user = (POJOS.Usuarios) session.load(POJOS.Usuarios.class, id);
-
+            
             u.setId(old_user.getId());
-
+            
             session.update(u); // modifica el objeto
 
             tx.commit(); //confirma transacción (sincronización con base de datos)
 
             session.close();
             return 1;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return 0;
         }
     }
-
+    
     public static int delete(int id) {
-        try
-        {
+        try {
             SessionFactory sfactory = HibernateUtil.getSessionFactory();
             Session session = sfactory.openSession();
             Transaction tx = session.beginTransaction();
-
+            
             POJOS.Usuarios u = (POJOS.Usuarios) session.load(POJOS.Usuarios.class, id);
             session.delete(u); // elimina el objeto
 
             tx.commit();
             session.close();
             return 1;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return 0;
         }
-
+        
     }
-
+    
     public static int validar(String login, String pass) {
         POJOS.Usuarios user = Op_Usuarios.find_by_login(login);
         if (user != null) {
             if (user.getPass().matches(pass)) {
-                return ((int)user.getId());
+                return ((int) user.getId());
             }
         }
-        return ((int)-1);
+        return ((int) -1);
     }
-
+    
     public static String imprimir(Usuarios u) {
         String separador = ";";
         String cadena = u.getLogin() + separador;
         cadena += u.getNif() + separador;
         cadena += u.getNombre() + separador + "\n";
         return (cadena);
-
+        
     }
-
+    
     public static boolean esAdm(String login) {
         Usuarios usu = find_by_login(login);
         if (usu.isEsAdm()) {
@@ -202,16 +241,16 @@ public class Op_Usuarios {
             return false;
         }
     }
-
+    
     public static Set extrae_visitas(String login) {
         Usuarios us = find_by_login(login);
         return (us.getVisitases());
-
+        
     }
-
+    
     public static Usuarios find_by_name(String dato) {
-          Usuarios resultado = null;
-
+        Usuarios resultado = null;
+        
         SessionFactory sfactory = HibernateUtil.getSessionFactory();
         Session session = sfactory.openSession();
         try {
@@ -221,16 +260,16 @@ public class Op_Usuarios {
             List results = cs.list();
             //tx.commit();
             if (!results.isEmpty()) {
-
+                
                 resultado = (Usuarios) results.get(0);
             }
-
+            
         } catch (Exception e) {
-
+            
         } finally {
             session.close();
         }
         return (resultado);
     }
-
+    
 }
