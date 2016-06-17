@@ -5,16 +5,9 @@
     <!-- BD u242229152_comer	/ usuario u242229152_jose  /	host mysql.hostinger.es -->
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <!--Configuración remota--><!--
-    <property name="hibernate.connection.url">jdbc:mysql://127.13.116.130:3306/cartera?zeroDateTimeBehavior=convertToNull</property>    
-    <property name="hibernate.connection.username">adminixLXQSY</property>
-    <property name="hibernate.connection.password">fH7r2E4DSNCA</property>-->
-    <!---->
-    <!--Configuración local-->
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/comerciales?zeroDateTimeBehavior=convertToNull</property>    
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/comerciales?zeroDateTimeBehavior=convertToNull</property>
     <property name="hibernate.connection.username">carterista</property>
     <property name="hibernate.connection.password">123456</property>
-    <!---->
     <property name="hibernate.show_sql">false</property>
     <property name="hibernate.query.factory_class">org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory</property>
     <mapping resource="POJOS/Empresas.hbm.xml"/>
